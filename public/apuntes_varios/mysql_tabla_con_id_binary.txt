@@ -1,0 +1,36 @@
+MySQL - como crear tabla con id binary(16)
+
+ * Datos obtenidos de Copilot en Edge.
+ 
+ Para crear una tabla en MySQL con una columna id que utilice el tipo de dato BINARY(16) para almacenar un UUID, 
+ puedes hacerlo de la siguiente manera. Esto es útil porque los UUID ocupan menos espacio en formato binario que en texto.
+
+Ejemplo de creación de tabla con BINARY(16) y UUID:
+Copiar el código
+CREATE TABLE ejemplo (
+    id BINARY(16) NOT NULL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+Insertar un UUID en formato binario:
+
+Para insertar un UUID en la tabla, puedes usar la función UUID_TO_BIN() para convertir el UUID de texto a formato binario.
+
+Copiar el código
+INSERT INTO ejemplo (id, nombre) 
+VALUES (UUID_TO_BIN(UUID()), 'Ejemplo de Nombre');
+
+Recuperar el UUID en formato legible:
+
+Cuando necesites consultar los datos y ver el UUID en su formato legible, puedes usar la función BIN_TO_UUID().
+
+Copiar el código
+SELECT BIN_TO_UUID(id) AS id_legible, nombre, creado_en 
+FROM ejemplo;
+
+Notas importantes:
+Eficiencia: Al usar BINARY(16) en lugar de CHAR(36), reduces el espacio de almacenamiento y mejoras el rendimiento en índices.
+Compatibilidad: Asegúrate de que tu versión de MySQL sea 8.0 o superior, ya que las funciones UUID_TO_BIN() y BIN_TO_UUID() están disponibles a partir de esta versión.
+
+Espero que esta información te sea útil para trabajar con UUIDs en MySQL. 

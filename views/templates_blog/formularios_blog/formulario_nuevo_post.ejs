@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Formulario post</title>
+
+    <link rel="stylesheet" href="/estilos_css/bootstrap.min.css">
+    <link rel="stylesheet" href="/estilos_css/colores_const.css">
+    <link rel="stylesheet" href="/estilos_css/estilos_blog.css">
+
+    <script>
+
+    </script>
+</head>
+
+<body>
+    <header class="bg_grey text_white">
+        <div class="mx-2 my-2 px-2 py-2">
+            <h2>Blog SurCode25 - Formulario para agregar nuevo post</h2>
+        </div>
+    </header>
+
+    <div id="div_datos_session"></div>
+
+    <main>
+        <section>
+            <div class="bg_beige mx-2 my-2 px-2 py-2">
+                <h3 class="text-center">Formulario de ingreso de Posteos</h3>
+
+                <div class="mx-2 my-2">
+
+                    <!-- formulario para enviar con FormData -->
+                    <form id="id_form_post_prueba" class="mx-2 my-2 px-2 py-2">
+                        <div class="bg_midnightblue text_seashell mx-1 my-1 px-1 py-1">
+
+                            <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure">
+                                <div class="mb-3 ms-1 me-1">
+                                    <label for="titulo" class="form-label">Título del post</label>
+                                    <input type="text" class="form-control" id="titulo" name="titulo"
+                                        placeholder="Ingresar el título dle post" required mingthlenth="3"
+                                        maxlength="50" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure">
+                                <div class="mb-3 ms-1 me-1">
+                                    <label for="contenido" class="form-label">Contenido del post</label>
+                                    <textarea class="form-control" id="contenido" rows="3" name="contenido" required
+                                        minlength="10" maxlength="500">
+                                    </textarea>
+                                </div>
+                            </div>
+
+                            <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure" id="div_seleccion_imagen">
+                                <div class="mb-3 ms-1 me-1">
+                                    <label for="imagen_url" class="form-label">URL de la imagen</label>
+                                    <input type="text" class="form-control" name="imagen_url" value="sin_imagen"
+                                        readonly>
+                                </div>
+                                <div class="d-grid d-md-flex justify-content-md-end">
+                                    <span class="bg_green text_white me-2 px-2 py-1" style="cursor: pointer;"
+                                        onclick="mostrarControlesImagen(true)">
+                                        Si necesita agregar una imagen, presionar aquí
+                                    </span>
+                                </div>
+
+                                <!--
+                                <div class="mb-3 ms-1 me-1">
+                                    <label for="imagen_post" class="form-label">URL de la imagen</label>                                    
+                                    <input type="file" class="form-control" name="imagen_post" required>
+                                </div>
+                                -->
+                            </div>
+
+                            <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure" id="div_input_autor">
+                            </div>
+
+                            <!--
+                            <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure">
+                                <div class="mb-3 ms-1 me-1">
+                                    <label for="fecha_publicacion" class="form-label">Fecha Publicación</label>
+                                    <input type="text" class="form-control" id="fecha_publicacion"
+                                        name="fecha_publicacion" placeholder="Ingresar fecha de publicación" 
+                                        required>
+                                </div>                                             
+                            </div>
+                            -->
+
+                            <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure">
+
+                                <%- include ('input_categorias_form', { 
+                                    url_categorias: "/blog/obtener_categorias_blog" }) %>
+
+                                    <div id="id_div_categoria_null"></div>
+
+                            </div>
+
+                            <div class="bg_cyan mx-2 my-2 px-2 py-2">
+                                <div class="d-grid d-md-flex justify-content-md-end">
+                                    <button type="submit" class="btn btn-success me-2 px-1 py-1">Enviar datos
+                                        Post</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+    </main>
+    <footer class="bg_brown text_cyan">
+        <div class="mx-2 my-2 px-2 py-2">
+            <h4>Proyecto: Blog de SurCode25</h4>
+            <h4>Autor: Salvador Mauricio Vilches Jerez</h4>
+        </div>
+    </footer>
+
+    <script src="/scripts_js/bootstrap.bundle.js"></script>
+
+    <script>
+
+
+        function establecerDatosSession() {
+
+            if (window.sessionStorage != null) {
+
+                if (sessionStorage.getItem("datos_session_sc25")) {
+
+                    const datos_session = JSON.parse(sessionStorage.getItem("datos_session_sc25"));
+                    const nombreUsuario = datos_session.username;
+                    const idUsuario = datos_session.id;
+
+                    let string_cabecera = "<h5 class='text-end mx-3 my-1 px-1 py-1'>Sesión iniciada por: "
+                        + nombreUsuario + "</h5>";
+
+                    document.getElementById("div_datos_session").innerHTML = string_cabecera;
+
+                    let string_input_autor = " <div class='mb-3 ms-1 me-1'>"
+                        + "<label for='autor' class='form-label'>Autor del post</label>"
+                        + "<input type='text' class='form-control' name='autor' value='"
+                        + nombreUsuario + "' readonly></div>"
+                        + " <div class='mb-3 ms-1 me-1'>"
+                        + "<input type='text' class='form-control' name='id_autor' value='"
+                        + idUsuario + "' readonly hidden></div>";
+                    document.getElementById("div_input_autor").innerHTML = string_input_autor;
+                } else {
+                    let string_datos_session = "<h5 class='bg_yellow text_green text-center mx-1 my-1 py-2 border'>Sesión no iniciada, "
+                        + "debe iniciar una sesión para enviar los datos.</h5>";
+                    document.getElementById("div_datos_session").innerHTML = string_datos_session;
+                }
+            } else {
+                //console.log("Navegador sin soporte para sessionStorage");
+                let string_datos_session = "<h5>No se pudieron obtener los dats de sessión, "
+                    + "Este navegador no tiene soporte para sessionStorage</h5>";
+                document.getElementById("div_datos_session").innerHTML = string_datos_session;
+            }
+        }
+
+
+
+        /*
+        const formulario_nuevo_post = document.getElementById("id_form_nuevo_post");
+
+        formulario_nuevo_post.addEventListener("submit", function (event) {
+            event.preventDefault();    // Evita el envío del formulario por defecto 
+
+            const myFormData = new FormData(event.currentTarget);
+
+            const token = "";
+
+
+            if (window.sessionStorage !== null) {
+                console.log("sessionStorage soportada");
+                const datos_session = JSON.parse(sessionStorage.getItem("datos_session_sc25"));
+                token = datos_session.token;
+                // agregamos el id del usuario al formData: 
+                myFormData.append("id_usuario", datos_session.id);
+            } else {
+                console.log("este navegador no soporta sessionStorage");
+            }
+
+            //myFormData.append("rol_usuario", rolUsuario); 
+
+            // Se puede detener la ejecución en cualquier lugar con: deburger
+            // para mostrar lo que hay en formData: myFormData.get("clave"),  y nos muestra el valor.
+            // para establecer un nuevo valor: myFormData.set("clave", "valor"); 
+
+            fetch("/blog/agregar_post", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: myFormData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Formulario enviado satisfactoriamente: ", data);
+
+                    window.location.assign("/blog/obtener_posteos");
+
+                })
+                .catch(error => {
+                    console.error("Error: ", error);
+                    //alert("Hubo un error al enviar formulario");
+                });
+
+        }, false);
+        */
+
+
+        // Sección para controlar una ventana modal 
+        /*
+        document.getElementById('showAlert').addEventListener('click', function () {
+            document.getElementById('customAlert').style.display = 'block';
+        });
+        */
+
+        /*
+        document.querySelector('.close-button').addEventListener('click', function () {
+            document.getElementById('customAlert').style.display = 'none';
+        });
+        document.querySelector("#button_continuar").addEventListener("click", function () {
+            //alert("Se presionó el botón para continuar");
+            window.location.assign("/frases/obtener_frases");
+        });
+        */
+
+        /*
+        window.addEventListener('click', function (event) {
+            if (event.target == document.getElementById('customAlert')) {
+                document.getElementById('customAlert').style.display = 'none';
+            }
+        });
+        */
+
+        const formulario_post_prueba = document.getElementById("id_form_post_prueba");
+
+        formulario_post_prueba.addEventListener("submit", function (event) {
+            event.preventDefault();    // Evita el envío del formulario por defecto 
+
+            const myFormData = new FormData(event.currentTarget);
+
+
+            if (myFormData.get("categoria_nueva") || myFormData.get("id_categorias")) {
+
+                fetch("/blog/agregar_post", {
+                    method: "POST",
+                    body: myFormData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Formulario enviado satisfactoriamente: ", data);
+
+                        //window.location.assign("/blog/obtener_posteos");
+
+                    })
+                    .catch(error => {
+                        console.error("Error: ", error);
+                        //alert("Hubo un error al enviar formulario");
+                    });
+
+            } else {
+
+                console.log("Debe ingresar al menos una categoría");
+
+                let string_categorias_null = "<h4 class='bg_black text_red'>Debe ingresar al menos una categoría</h4>";
+
+                getElementById("id_div_categoria_null").innerHTML = string_categorias_null;
+
+            }
+
+            //myFormData.append("rol_usuario", rolUsuario); 
+
+            // Se puede detener la ejecución en cualquier lugar con: deburger
+            // para mostrar lo que hay en formData: myFormData.get("clave"),  y nos muestra el valor.
+            // para establecer un nuevo valor: myFormData.set("clave", "valor"); 
+
+
+
+        }, false);
+
+
+        function mostrarControlesImagen(post_con_imagen) {
+
+            let stringSeleccionImagen = "";
+
+            if (post_con_imagen) {
+
+                stringSeleccionImagen = "<div class='mb-3 ms-1 me-1'>"
+                    + "<label for='imagen_post' class='form-label'>URL de la imagen</label>"
+                    + "<input type='file' class='form-control' name='imagen_post' required>"
+                    + "</div>"
+                    + "<div class='d-grid d-md-flex justify-content-md-end'>"
+                    + "<span class='bg_green text_white me-2 px-2 py-1' style='cursor: pointer;'"
+                    + " onclick='mostrarControlesImagen(false)'>"
+                    + "Si no necesita agregar una imagen, presionar aquí</span></div>";
+
+            } else {
+
+                stringSeleccionImagen = "<div class='mb-3 ms-1 me-1'>"
+                    + "<label for='imagen_url' class='form-label'>URL de la imagen</label>"
+                    + "<input type='text' class='form-control' name='imagen_url' value='sin_imagen' readonly>"
+                    + "</div>"
+                    + "<div class='d-grid d-md-flex justify-content-md-end'>"
+                    + "<span class='bg_green text_white me-2 px-2 py-1' style='cursor: pointer;'"
+                    + " onclick='mostrarControlesImagen(true)'>"
+                    + "Si necesita agregar una imagen, presionar aquí</span></div>";
+
+            }
+
+            document.getElementById("div_seleccion_imagen").innerHTML = stringSeleccionImagen;
+
+        }
+
+        window.addEventListener("load", establecerDatosSession, false);
+
+          /*
+          Ejemplo de envío de formulario con los datos del token
+
+            fetch("https://ejemplo.com/api/usuarios", {
+    headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+    },
+});
+.then((res) => res.json())
+  .catch((error) => console.error("Error:", error))
+  .then((response) => console.log("Success:", response));
+             const token = datos_session.token;
+
+            console.log("token para enviar: ", token);   
+            
+            fetch("/blog/iniciar_formulario_post", {
+                method: "GET",
+                headers: {                     
+                    "Content-Type": "application/json", 
+                    "Authorization": `Bearer ${token}`
+                }
+            })     
+
+            */
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Login</title>
+
+    <link rel="stylesheet" href="/estilos_css/bootstrap.min.css">
+    <link rel="stylesheet" href="/estilos_css/colores_const.css">
+
+    <style>
+    </style>
+
+</head>
+
+<body onload="establecer_seccion('<%= seccion %>')">
+
+    <header class="px-1 py-1 bg_darkslategrey text_gainsboro">
+        <div class="mx-1 my-1 px-1 py-1">
+            <h3 class="text-center">Formulario para login de usuarios</h3>
+        </div>
+    </header>
+
+    <main class="px-1 py-1">
+        <section class="mx-1 my-1 px-1 py-1">
+            <article class="bg_azure px-1 py-1">
+
+                <div>
+
+                    <h4>Sección: <%= seccion %></h4>
+                </div>
+
+
+                <div class="bg_darkseagreen mx-2 my-2 px-2 py-2 rounder-3">
+
+                    <form id="id_formulario_usuario" method="post">
+
+                        <div class="bg_steelblue text_floralwhite mx-1 my-1 px-1 py-1 rounded-3"
+                            id="div_input_username">
+                            <div class="mx-2 my-2 row">
+                                <label for="username" class="col-sm-2 col-form-label">
+                                    Nombre usuario
+                                </label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="username" class="form-control" id="inputUsername" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg_steelblue text_floralwhite mx-1 my-1 px-1 py-1 rounded-3"
+                            id="div_input_password">
+                            <div class="mx-2 my-2 row">
+                                <label for="password" class="col-sm-2 col-form-label">Password</label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="inputPassword" name="password"
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg_steelblue text_floralwhite mx-2 my-2 px-1 py-1 rounded-3">
+                            <div class="d-grid d-md-flex justify-content-md-end me-2">
+                                <button type="submit" class="btn btn-light my-2">Enviar Datos</button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="bg_beige mx-1 my-1 px-2 py-2" id="div_mensaje_formulario_01">
+                    <h5 class="text-center" id="id_texto_info_01"></h5>
+                </div>
+
+            </article>
+        </section>
+    </main>
+
+    <footer class="bg_darkslategrey text_gainsboro px-1 py-1">
+        <div class="mx-1 my-1 px-1 py-1">
+            <p>Formulario para registro y login de usuarios del blog</p>
+            <p>Autor: Salvador Mauricio Vilches Jerez</p>
+            <p>Página para formulario de usuarios del blog para el proyecto app_web_express_25</p>
+        </div>
+    </footer>
+
+    <script>
+        const formulario_nuevo_usuario = document.getElementById("id_formulario_usuario");
+
+        formulario_nuevo_usuario.addEventListener("submit", function (event) {
+            event.preventDefault();    // Evita el envío del formulario por defecto 
+
+            const myFormData = new FormData(event.currentTarget);
+
+
+            fetch("/usuarios/login_usuario", {
+                method: "POST",
+                body: myFormData
+            })
+                .then(response => response.json())
+                .then(data_response => {
+                    
+                    let elemento_info_01 = document.getElementById("id_texto_info_01"); 
+
+                    if (data_response.accion === "verificar_username") {
+                        document.getElementById("div_input_username").style.border = "2px solid red"; 
+                        elemento_info_01.innerHTML = "Nombre de usuario incorrecto";
+                        elemento_info_01.style.color = "red";
+                    } else if (data_response.accion === "verificar_password") {
+                        document.getElementById("div_input_username").style.border = "2px solid white"; 
+                        document.getElementById("div_input_password").style.border = "2px solid red"; 
+                        elemento_info_01.innerHTML = "Contraseña incorrecta";
+                        elemento_info_01.style.color = "red";
+                    } else {
+                        elemento_info_01.innerHTML = "Los datos son correctos";
+                        elemento_info_01.style.color = "green";
+                        document.getElementById("div_input_username").style.border = "2px solid white"; 
+                        document.getElementById("div_input_password").style.border = "2px solid white";
+
+                       
+                        // comprobamos si el navegador tiene soporte para sessionStorage
+
+                        if (window.sessionStorage !== null) {
+                            // guardamos los datos de sessión de usuario para usarlos en otras secciones
+                        sessionStorage.setItem("datos_session_sc25", JSON.stringify(data_response));
+                        } else {
+                            console.log("No se pudieron guardar los datos de sesión"); 
+                            console.log("Este navegador no tiene soporte para sessionStorage"); 
+                        }
+                        
+                        // redirigimos hacia la sección en la que se llamó al inicio de sesión
+                        window.location.assign("/blog/inicio_blog");
+                       
+                    } 
+                  
+                    /*
+                    if (tipoFormulario === "formulario_login") {
+                        console.log("datos del token: ", data);
+                        sessionStorage.setItem("token", data.token);
+                        //obtenerUsuarios();            
+                    }
+                        */
+
+                    /*
+                    if (tipoFormulario === "formulario_registro") {
+                        console.log("los datos son correctos, pero como es una prueba no vamos a hacer nada");
+                        //window.location.assign("/usuarios/mostrar_formulario_login");
+                        console.log("datos obtenidos del servidor: ", data);
+                    }
+                        */
+
+                    // redireccionamos hacia la ruta que nos muestra todas las fraces
+                    //window.location.assign("/blog/obtener_posteos");
+
+                })
+                .catch(error => {
+                    console.error("Error: ", error);
+                    //alert("Hubo un error al enviar formulario");
+                });
+
+        }, false);
+
+        function establecer_seccion(seccion) {
+            console.log("sección establecida: ", seccion); 
+        }
+        
+    </script>
+
+    <script src="/scripts_js/bootstrap.bundle.js"></script>
+
+</body>
+
+</html>

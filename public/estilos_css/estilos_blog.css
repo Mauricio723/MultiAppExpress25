@@ -1,0 +1,12 @@
+.imagen_post {
+    display: block;
+    width: 70%;
+    margin: auto;
+}
+
+.etiqueta_boton:hover {
+    background-color: rgb(233, 241, 113);
+    color: rgb(75, 77, 38);
+    cursor: pointer;
+}
+

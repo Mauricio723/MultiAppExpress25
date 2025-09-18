@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>formulario upload img</title>
+
+</head>
+
+<body>
+
+    <div>
+        <h1>Subiendo Imágenes</h1>
+
+        <form action="/blog/agregar_imagen_prueba" method="POST" enctype="multipart/form-data">
+            <!--<label for="file-upload" class="custom-file-upload">
+                <i class="fas fa-cloud-upload-alt"></i>Seleccionar fichero
+            </label>
+            <input id="file-upload" type="file" name="image" />-->
+
+            <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure">
+                <div class="mb-3 ms-1 me-1">
+                    <label for="titulo" class="form-label">Título del post</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo"
+                        placeholder="Ingresar el título dle post" required minlength="5" maxlength="100">
+                </div>
+            </div>
+
+            <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure">
+                <div class="mb-3 ms-1 me-1">
+                    <label for="contenido" class="form-label">Contenido del post</label>
+                    <textarea class="form-control" id="contenido" rows="3" name="contenido" required>
+                                    </textarea>
+                </div>
+            </div>
+
+            <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure">
+                <div class="mb-3 ms-1 me-1">
+                    <label for="imagen_post" class="form-label">URL de la imagen</label>
+                    <!--
+                                    <input type="text" class="form-control" id="imagen_url"
+                                        name="imagen_url" placeholder="Ingresar url de la imagen">-->
+                    <input type="file" class="form-control" name="imagen_post" required>
+
+                </div>
+            </div>
+
+            <input type="submit" value="Subir fichero" />
+        </form>
+
+    </div>
+
+
+</body>
+
+</html>

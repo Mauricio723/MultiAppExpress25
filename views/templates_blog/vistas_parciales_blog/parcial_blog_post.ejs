@@ -1,0 +1,92 @@
+<div>
+   
+    <!--
+    datos despues de modificar categorias:  {
+  id_post: 1,
+  titulo: 'Provincia Fitogeográfica del Monte',
+  contenido_01: 'Se extiende sobre una gran región hacia el norte de Argentina llegando hasta el sur de Salta inclusive. En la Patagonia abarca solo el norte llegando por el este hasta el Río Chubut. Está dominada por\r\n' +
+    'una estepa arbustiva en donde son comunes distintas especies de Jarillas y Algarrobos.',
+  imagen_url: 'https://res.cloudinary.com/dirq37l58/image/upload/v1735617226/filesVilma25/t6vylniokqrdtasd2rgd.jpg',
+  fecha_publicacion: '28/8/2025, 04:06:04',
+  id_autor: 'e10014ca-5e0e-11f0-882e-94de80377a49',
+  username: 'Salvador01',
+  categorias: [
+    { id_cat: 3, categoria: 'biología' },
+    { id_cat: 7, categoria: 'geografía' }
+  ]
+}
+    -->
+
+    <article class="bg_orange mx-1 my-1 px-1 py-1">
+        <div class="mx-1 my-1 px-1 py-1 border">
+            <h4 class="text_blue">Sección para mostrar posteos del blog</h4>
+
+
+            <div class="mx-2 my-2 px-1 py-1 bg_blue">
+
+
+
+
+                <div class="bg_beige mx-2 my-2 px-1 py-1 rounded-2">
+
+                    <div class="mx-2 my-2 px-1 py-1 border border-info">
+
+                        <p class="mx-1 my-1">id: <%= datos_post_seleccionado.id_post %>
+                        </p>
+                        <h3 class="text-center">
+                            <%= datos_post_seleccionado.titulo %>
+                        </h3>
+
+                        <% if (datos_post.imagen_url !=="sin_imagen" ) { %>
+                            <div class="mx-2 my-2">
+                                <img class="imagen_post" src="<%= datos_post_seleccionado.imagen_url %>"
+                                    alt="imagen del post">
+                            </div>
+                            <% } %>
+
+                                <div class="mx-1 my-1 px-1 py-1">
+                                    <p>
+                                        <%= datos_post_seleccionado.contenido_01 %>
+                                    </p>
+                                </div>
+
+                                <h5>autor: <%= datos_post_seleccionado.username %>
+                                </h5>
+                                <h5>id_autor: <%= datos_post_seleccionado.id_autor %>
+                                </h5>
+
+                                <p>fecha publicación: <%= datos_post_seleccionado.fecha_publicacion %>
+                                </p>
+
+                                <div class="mx-2 my-1 px-2 py-2 bg_green text_white">
+                                    <h5>Categorias</h5>
+
+                                    <% datos_post_seleccionado.categorias.forEach(categoria=> { %>
+
+                                        <span class="mx-2 my-2 px-1 py-1">
+                                            id: <%= categoria.id_cat %> - categoría: <%= categoria.categoria %>
+                                        </span>
+
+                                        <% }) %>
+                                </div>
+
+                                <div>
+                                    <button
+                                        onclick="window.location.assign('/blog/mostrar_formulario_update/<%= datos_post.id_post %>')">
+                                        modificar post</button>
+
+                                </div>
+
+                    </div>
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </article>
+
+</div>

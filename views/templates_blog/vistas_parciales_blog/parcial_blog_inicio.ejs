@@ -1,0 +1,37 @@
+<article class="bg_white mx-2 my-2 px-2 py-2">
+
+    <div id="div_articles_blog_01">    
+    </div>
+
+    <div class="mx-1 my-1 px-1 py-1 border">
+        <h6><a href="/blog/navegacion_blog">Iniciar Navegación por el Blog</a></h6>
+    </div>
+
+</article>
+
+<script>
+     function mostrarInicioBlog() {
+
+            // div_articles_blog_01
+
+            let string_article_inicio_blog = "<h4 class='mx-2 my-2 px-2 py-2'>Inicio Blog</h4>"
+                + "<p class='px-2 py-2'>Bienvenidos al blog de SurCode25, aquí pueden encontrar posteos de " 
+                + "los usuarios del sitio, ordenados por categorías. Para poder ver los posteos, no es necesario " 
+                +"crear una cuenta en este sitio; pero, si quieren crear comentarios para cada publicación es "
+                + "necesario crear un usuario e iniciar sesión."
+                + "</p>"
+                + "<p class='px-2 py-2'>Para poder publicar un posteo, es necesario crear una cuenta como administrador "
+                + "para esta sección (administrador de blog)."
+                + " Por el momento este sitio está a prueba, por lo que no está disponibles la cuentas de administrador."
+                + "Continuen visitandonos, ya que pronto estableceremos los enlaces necesarios, y las condiciones, para"
+                + " obtener una cuenta de administrador de sus propias publicaciones."
+                + "</p>";
+
+            document.getElementById("div_articles_blog_01").innerHTML = string_article_inicio_blog;
+
+
+        }
+
+        window.addEventListener("load", mostrarInicioBlog, false);
+
+</script>

@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev-01": "nodemon app.js"
+    "dev-01": "nodemon app.js",
+    "dev-tablas-db": "nodemon app_admin_dev/app_admin_tablas_db.js", 
+    "dev-usuarios-01": "nodemon usuarios_app/app_usuarios.js"
   },
   "repository": {
     "type": "git",
@@ -25,8 +27,12 @@
   },
   "homepage": "https://github.com/Mauricio723/app_web_express_25#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.6.1",
+    "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.13.0"
   },

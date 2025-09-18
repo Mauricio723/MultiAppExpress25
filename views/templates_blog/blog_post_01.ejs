@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog SurCode25</title>
+
+    <link rel="stylesheet" href="/estilos_css/bootstrap.min.css">
+
+    <!--<link rel="stylesheet" href="/estilos_css/estilos_main.css"> -->
+
+    <link rel="stylesheet" href="/estilos_css/colores_const.css">
+    <link rel="stylesheet" href="/estilos_css/estilos_blog.css">
+
+</head>
+
+<body>
+
+    <main>
+        <section>
+
+            <article class="bg_orange mx-1 my-1 px-1 py-1">
+                <div class="mx-1 my-1 px-1 py-1 border">
+                    <h4 class="text_blue">Sección para mostrar posteos del blog</h4>
+
+
+                    <div class="mx-2 my-2 px-1 py-1 bg_blue">
+
+
+
+
+                        <div class="bg_beige mx-2 my-2 px-1 py-1 rounded-2">
+
+                            <div class="mx-2 my-2 px-1 py-1 border border-info">
+
+                                <p class="mx-1 my-1">id: <%= datos_post.id_post %>
+                                </p>
+                                <h3 class="text-center">
+                                    <%= datos_post.titulo %>
+                                </h3>
+
+                                <% if (datos_post.imagen_url !=="sin_imagen" ) { %>
+                                    <div class="mx-2 my-2">
+                                        <img class="imagen_post" src="<%= datos_post.imagen_url %>"
+                                            alt="imagen del post">
+                                    </div>
+                                    <% } %>
+
+                                        <div class="mx-1 my-1 px-1 py-1">
+                                            <p>
+                                                <%= datos_post.contenido_01 %>
+                                            </p>
+                                        </div>
+
+                                        <h5>autor: <%= datos_post.username %>
+                                        </h5>
+                                        <h5>id_autor: <%= datos_post.id_autor %></h5>
+                                        
+                                        <p>fecha publicación: <%= datos_post.fecha_publicacion %>
+                                        </p>
+
+                                        <div class="mx-2 my-1">
+                                            <p class="mx-2 my-2 py-1 text-end">Categoría: <%= datos_post.categorias %>
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <button
+                                                onclick="window.location.assign('/blog/mostrar_formulario_update/<%= datos_post.id_post %>')">
+                                                modificar post</button>
+
+                                        </div>
+
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </section>
+    </main>
+
+    <script src="/scripts_js/bootstrap.bundle.js"></script>
+
+</body>
+
+</html>

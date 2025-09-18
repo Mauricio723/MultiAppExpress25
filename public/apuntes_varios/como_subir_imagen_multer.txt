@@ -1,0 +1,117 @@
+Node - Express - como subir una imagen desde una plantilla ejs.
+
+* Datos obtenidos de Copilot en Edge.
+
+ Aquí tienes un ejemplo sencillo de cómo subir una imagen utilizando Node.js, Express, Multer 
+ y EJS como motor de plantillas. Este ejemplo incluye los pasos básicos para configurar el servidor, 
+ manejar la subida de archivos y mostrar la imagen subida.
+
+
+1. Instalar dependencias
+
+Asegúrate de tener instaladas las siguientes dependencias en tu proyecto:
+
+Copiar el código
+npm install express multer ejs
+
+
+2. Estructura básica del proyecto
+
+Organiza tu proyecto de la siguiente manera:
+
+/project
+  /uploads       # Carpeta donde se guardarán las imágenes subidas
+  /views         # Carpeta para las plantillas EJS
+    index.ejs
+  app.js         # Archivo principal del servidor
+
+
+3. Código del servidor (app.js)
+
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+
+const app = express();
+
+// Configuración de Multer para guardar archivos en la carpeta "uploads"
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads'); // Carpeta donde se guardarán las imágenes
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`); // Nombre único para cada archivo
+  },
+});
+
+const upload = multer({ storage });
+
+// Configuración de EJS como motor de plantillas
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Middleware para servir archivos estáticos (como imágenes subidas)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Ruta para mostrar el formulario de subida
+app.get('/', (req, res) => {
+  res.render('index', { imageUrl: null });
+});
+
+// Ruta para manejar la subida de imágenes
+app.post('/upload', upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send('No se subió ningún archivo.');
+  }
+  const imageUrl = `/uploads/${req.file.filename}`;
+  res.render('index', { imageUrl }); // Renderiza la vista con la imagen subida
+});
+
+// Iniciar el servidor
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
+
+4. Plantilla EJS (views/index.ejs)
+Copiar el código
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subir Imagen</title>
+</head>
+<body>
+  <h1>Subir Imagen</h1>
+  <form action="/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" required />
+    <button type="submit">Subir</button>
+  </form>
+
+  <% if (imageUrl) { %>
+    <h2>Imagen Subida:</h2>
+    <img src="<%= imageUrl %>" alt="Imagen subida" style="max-width: 300px;" />
+  <% } %>
+</body>
+</html>
+
+
+5. Crear la carpeta uploads
+
+Antes de ejecutar el servidor, asegúrate de crear la carpeta uploads en la raíz del proyecto. 
+Esta carpeta almacenará las imágenes subidas.
+
+6. Ejecutar el servidor
+
+Inicia el servidor con:
+
+Copiar el código
+node app.js
+
+
+Luego, abre tu navegador y ve a http://localhost:3000. Allí podrás subir una imagen y verla 
+renderizada en la misma página.
+
+¡Y listo! Este es un ejemplo funcional y básico para subir imágenes con Node.js, Express, Multer y EJS. 
+Puedes personalizarlo según tus necesidades. 
