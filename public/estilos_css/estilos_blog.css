@@ -4,9 +4,64 @@
     margin: auto;
 }
 
+.texto_justificado {
+    text-align: justify;
+}
+
 .etiqueta_boton:hover {
     background-color: rgb(233, 241, 113);
     color: rgb(75, 77, 38);
     cursor: pointer;
 }
 
+.contenedor_boton {
+    display: flex;
+    justify-content: flex-end;
+    padding: 3px;
+}
+
+.elemento_boton {
+    padding: 5px 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.elemento_boton:hover {
+    background-color: #0056b3;
+}
+
+.span_boton_01 {
+    display: block;
+    width: 90%;
+    margin: auto;
+    text-align: center;
+    font-size: 0.9em;
+    background-color: rgb(227, 236, 235);
+    color: rgb(14, 40, 51);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.span_boton_01:hover {
+    background-color: rgb(9, 104, 48);
+    color: white;
+}
+
+.estilo_boton_01 { 
+    display: block;
+    width: 90%;
+    margin: auto;
+    text-align: center;
+    font-size: 0.9em;
+    background-color: rgb(227, 236, 235);
+    color: rgb(14, 40, 51);
+    border: none; 
+    border-radius: 5px;
+}
+.estilo_boton_01:hover {
+    background-color: rgb(9, 104, 40);
+    color: white;
+}

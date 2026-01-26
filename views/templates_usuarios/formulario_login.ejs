@@ -14,7 +14,7 @@
 
 </head>
 
-<body onload="establecer_seccion('<%= seccion %>')">
+<body>
 
     <header class="px-1 py-1 bg_darkslategrey text_gainsboro">
         <div class="mx-1 my-1 px-1 py-1">
@@ -26,12 +26,7 @@
         <section class="mx-1 my-1 px-1 py-1">
             <article class="bg_azure px-1 py-1">
 
-                <div>
-
-                    <h4>Sección: <%= seccion %></h4>
-                </div>
-
-
+              
                 <div class="bg_darkseagreen mx-2 my-2 px-2 py-2 rounder-3">
 
                     <form id="id_formulario_usuario" method="post">
@@ -130,7 +125,7 @@
                         }
                         
                         // redirigimos hacia la sección en la que se llamó al inicio de sesión
-                        window.location.assign("/blog/inicio_blog");
+                        window.location.assign("/blog_02/inicio_blog");
                        
                     } 
                   
@@ -161,10 +156,7 @@
 
         }, false);
 
-        function establecer_seccion(seccion) {
-            console.log("sección establecida: ", seccion); 
-        }
-        
+               
     </script>
 
     <script src="/scripts_js/bootstrap.bundle.js"></script>

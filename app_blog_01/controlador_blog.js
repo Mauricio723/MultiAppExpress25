@@ -1,98 +1,86 @@
-import { BlogModel } from "./modelo_blog_mysql.js";
+
+import { BlogModel02 } from "./modelo_blog_02.js";
 
 //import multer from "multer"; 
+
 
 import {
     uploadImage, eliminarImagen,
     verImagenesDisponibles, mostrarDatosImagen
 } from "../control_imagenes/img_control_cloud.js";
 
-export class BlogController {
+
+export class BlogController02 {
 
 
-    static async obtenerTitulosPosteos(req, res) {
-        const datos_posteos = await BlogModel.obtenerTitulosPosteos(); 
-        res.json(datos_posteos); 
+
+    static async mostrarPublicacionesBlog(req, res) {
+        const publicacionesBlog = await BlogModel02.obtenerPublicacionesBlog();
+        res.render("templates_blog/blog_publicaciones.ejs", { publicaciones: publicacionesBlog });
     }
 
-    static async obtenerTitulosPosteosPorUsuario(req, res) {
-        const id_usuario = req.params.id_usuario;
-
-        const datos_posteos = await BlogModel.obtenerTitulosPosteosPorUsuario(id_usuario); 
-        res.json(datos_posteos); 
-    }
-
-    static async obtenerNombresPosteosPorIdCategoria(req, res) {
-
-        const id_categoria = req.params.id_categoria;
-
-        const datosPosteos = await BlogModel.obtenerNombresPosteosPorIdCategoria(id_categoria);
-
-        //console.log("datos posteos: ", datosPosteos[0]); 
-        //res.json(datosPosteos[0]);
-
-        res.json(datosPosteos); 
-        
-        //res.render("templates_blog/blogSurCode25.ejs", { datos: datosPosteos[0] });
-    }
-
-    static async obtenerPostPorId_post(req, res) {
+    static async mostrarPostSeleccionado(req, res) {
         const id_post = req.params.id_post;
-        const datosPost = await BlogModel.obtenerPostPorId_post(id_post); 
-        //console.log("controlador, datos post: ", datosPost);        
-        const categorias_post_seleccionado = await BlogModel.obtenerCategoriaPostSeleccionado(id_post);
-        //console.log("categorias de este post: ", categorias_post_seleccionado); 
+        const datosPost = await BlogModel02.obtenerPostPorId_post(id_post);
+        const categorias_post_seleccionado = await BlogModel02.obtenerCategoriaPostSeleccionado(id_post);
         datosPost[0].categorias = categorias_post_seleccionado;
-        //console.log("datos despues de modificar categorias: ", datosPost[0]);        
-        res.render("templates_blog/blog_base_01.ejs", { seccion_blog: "post_seleccionado", datos_post: datosPost[0] });
-    }
-    
-    static async mostrarFormularioPost(req, res) {
-        // obtenemos las categorías para mostrarlas como opciones directas en el formulario
-        const categorias_blog = await BlogModel.obtenerCategoriasBlog();
-        res.render("templates_blog/formularios_blog/formulario_nuevo_post.ejs", { categorias: categorias_blog });
+        res.render("templates_blog/vista_posteo_blog.ejs", { datos_post: datosPost[0] });
     }
 
     static async obtenerCategoriasBlog(req, res) {
-        const categorias_blog = await BlogModel.obtenerCategoriasBlog();
+        const categorias_blog = await BlogModel02.obtenerCategoriasBlog();
         res.json(categorias_blog);
     }
 
     static async obtenerCategoriasDePosteos(req, res) {
-        const categoriasPosteos = await BlogModel.obtenerCategoriasDePosteos(); 
+        const categoriasPosteos = await BlogModel02.obtenerCategoriasDePosteos();
         res.json(categoriasPosteos);
     }
 
-    static async agregarPostNuevoPrueba(req, res) {
+    static async obtenerPostPorId_post(req, res) {
+        const id_post = req.params.id_post;
+        const datosPostSeleccionado = await BlogModel02.obtenerPostPorId_post(id_post);
+        res.json(datosPostSeleccionado[0]);
+    }
 
-        const datos_nuevo_post = req.body;
+    static async obtenerPosteosPorIdCategoria(req, res) {
 
-        //console.log("datos del nuevo post: ", datos_nuevo_post);
-        //const titulo = datos_nuevo_post.titulo;
-        //console.log("titulo: ", titulo);
-        //const contenido = datos_nuevo_post.contenido;
-        //console.log("contenido: ", contenido);
-        //const url_imagen = datos_nuevo_post.imagen_url;
-        //console.log("url_imagen: ", url_imagen);
-        //const autor = datos_nuevo_post.autor;
-        //console.log("autor: ", autor); 
-        //const id_autor = datos_nuevo_post.id_autor; 
-        //console.log("id autor: ", id_autor);       
+        const id_categoria = req.params.id_categoria;
 
-        res.json({ mensaje: "Se agtregó correctamente el post: " + datos_post_para_enviar.titulo });
+        const datosPosteos = await BlogModel02.obtenerPosteosPorIdCategoria(id_categoria);
 
+        res.json(datosPosteos);
+    }
+
+    static async obtenerPosteosPorUsuario(req, res) {
+        const id_usuario = req.params.id_usuario;
+
+        const datos_posteos = await BlogModel02.obtenerPosteosPorUsuario(id_usuario);
+        
+        res.render("templates_blog/blog_publicaciones.ejs", { publicaciones: datos_posteos });
     }
 
 
-    static async agregarPostNuevo(req, res) {
+
+    static async agregarNuevoPost(req, res) {
 
         const datos_nuevo_post = req.body;
 
         let url_imagen_post = "";
 
+        if (req.file !== undefined) {
+
+            const file_img = req.file;
+
+            const nombre_carpeta_blog = "img_blog_vilma25";
+
+            url_imagen_post = await uploadImage(file_img, nombre_carpeta_blog);
+
+        } else {
+            url_imagen_post = "sin_imagen";
+        }
+
         let lista_ids_categorias = [];
-        
-        console.log("imagen_url: ", datos_nuevo_post.imagen_url);
 
         if (datos_nuevo_post.id_categorias) {
             const id_categorias = datos_nuevo_post.id_categorias;
@@ -101,72 +89,19 @@ export class BlogController {
             }
         }
 
-        const categoria_nueva = datos_nuevo_post.categoria_nueva;
-        let id_categoria_nueva = 0;
+        if (datos_nuevo_post.categoria_nueva) {
 
-        if (categoria_nueva) {
-            console.log("categoría nueva: ", categoria_nueva);
+            const categoria_nueva = datos_nuevo_post.categoria_nueva;
 
-            const datos_ingreso_categoria = await BlogModel.agregarCategoriaBlog(categoria_nueva);
+            const datos_ingreso_categoria = await BlogModel02.agregarCategoriaBlog(categoria_nueva);
 
-            console.log("datos_ingreso_categoria: ", datos_ingreso_categoria);
-
-            id_categoria_nueva = datos_ingreso_categoria.insertId;
-
-            console.log("id retornado de categoría nueva: ", id_categoria_nueva);
+            let id_categoria_nueva = datos_ingreso_categoria.insertId;
 
             lista_ids_categorias.push(id_categoria_nueva);
-
 
         } else {
             console.log("No hay categoría nueva");
         }
-
-
-
-        if (datos_nuevo_post.imagen_url !== "sin_imagen") {
-
-            const file = req.file;
-
-            //const fechaActual = new Date();         
-            //console.log("fecha actual: ", fechaActual.toLocaleString("es-AR")); 
-
-            console.log("dentro de con imagen");
-
-
-            const nombre_carpeta_blog = "img_blog_vilma25";
-
-            //const url_imagen_nueva = await uploadImage(file, nombre_carpeta_blog);
-
-            //const retorno_ingreso_post = await BlogModel.agregarPostConImagen(datos_blog, url_imagen);
-
-            //url_imagen_post = url_imagen_nueva;
-            
-            url_imagen_post = "sin_imagen"; 
-            
-            //res.json(retorno_ingreso_post);
-
-            //res.json({ mensaje: "Se agregaron los datos correctamente" });
-
-        } else {
-
-            console.log("dentro de sin imagen");
-
-            //console.log("valor de imagen_url: ", datos_blog.imagen_url);
-
-
-            //const retorno_ingreso_post = await BlogModel.agregarPostSinImagen(datos_blog);
-
-            //res.json(retorno_ingreso_post);
-
-            url_imagen_post = datos_nuevo_post.imagen_url;
-
-            
-
-        }
-
-
-        // nombre_usuario_autor = datos_nuevo_post.autor
 
         const datos_post_para_enviar = {
             "titulo": datos_nuevo_post.titulo,
@@ -175,133 +110,122 @@ export class BlogController {
             "id_usuario": datos_nuevo_post.id_autor
         }
 
-        const retorno_ingreso_post = await BlogModel.agregarPostNuevo(datos_post_para_enviar);
-
+        const retorno_ingreso_post = await BlogModel02.agregarNuevoPost(datos_post_para_enviar);
 
         const id_post_ingresado = retorno_ingreso_post.insertId;
 
-        const datos_categorias_ingresados = await BlogModel.agregar_ids_post_categoria(id_post_ingresado, lista_ids_categorias); 
+        const datos_categorias_ingresados = await BlogModel02.agregarIdsPostCategoria(id_post_ingresado, lista_ids_categorias);
 
-        res.json({ mensaje: "Se agregaron los datos correctamente" });
-
+        res.json({ mensaje_post_nuevo: "los datos fueron recibidos con alegría" });
 
     }
 
-    /*
-        "INSERT INTO blog_posteos (titulo, contenido, imagen_url, usuario_id," 
-        + " fecha_publicacion) VALUES (?, ?, ?, ?, ?);"
-    */
+
+
 
     static async actualizarPost(req, res) {
 
-        const datos_update_post = req.body;
+        const id_post = req.params.id_post;
 
-        console.log("actualizando post");
-
-        console.log("valor de imagen_url: ", datos_update_post.imagen_url);
-
-        //console.log("datos recibidos de actualizar port: ", datos_update_post);
+        let datos_actualizados = req.body;
 
 
-        if (datos_update_post.imagen_url !== "sin_imagen") {
+        if (req.file) {             
 
+            const file_img = req.file;
+            const carpeta_cloudinary = "img_blog_vilma25";
 
-            const file = req.file;
+            // obtenemos el valor de url_imagen desde la tabla blog_posteos   
+            const url_imagen_anterior = await BlogModel02.obtenerUrlImagenPost(id_post);
 
-            //const fechaActual = new Date();         
-            //console.log("fecha actual: ", fechaActual.toLocaleString("es-AR")); 
+            if (url_imagen_anterior === "sin_imagen" || url_imagen_anterior.length < 10) {
 
-            console.log("datos de la imagen: ", file);
+                const url_imagen_nueva = await uploadImage(file_img, carpeta_cloudinary);
+                datos_actualizados.imagen_url = url_imagen_nueva;
 
-            console.log("dentro de con imagen");
+            } else {
+                const url_imagen_nueva = await uploadImage(file_img, carpeta_cloudinary);
+                datos_actualizados.imagen_url = url_imagen_nueva;
+                // eliminamos la imagen anterior
+                const return_eliminar_img = await eliminarImagen(url_imagen_anterior);
 
-
-            //const nombre_carpeta_blog = "img_blog_vilma25";
-
-            //const url_imagen = await uploadImage(file, nombre_carpeta_blog);
-
-            //const retorno_ingreso_post = await BlogModel.agregarPostConImagen(datos_blog, url_imagen);
-
-            //res.json(retorno_ingreso_post);
-            res.json({ mensaje: "actualizando post con imagen" });
-
-        } else {
-
-            console.log("datos recibidos, en sin imagen: ", datos_update_post);
-
-            res.json({ mensaje: "actualizando post sin imagen" });
+                console.log("respuesta al eliminar imagen: ", return_eliminar_img);
+            }
 
         }
 
+        const resUpdatePost = await BlogModel02.actualizarPost(id_post, datos_actualizados);
+
+        res.json({ mensaje_update: resUpdatePost });
+
     }
 
-    static async subirImagenPrueba(req, res) {
-        console.log("dentro de subirImagenPrueba");
-        console.log("datos imagen: ", req.file);
-    }
 
     static async subirImagenPost(req, res) {
 
         const nombre_carpeta_blog = "img_blog_vilma25";
-        const { file } = req;
+        const { file } = req.file;
         //const id_producto = req.params.id_producto;
+        const id_post = req.params.id_post;
+
         const url_imagen = await uploadImage(file, nombre_carpeta_blog);
 
         if (!url_imagen) {
             return res.status(500).json({ error: "Error al subir archivo" });
         }
-        //const datos_model_tienda = await TiendaModel.modificar_imagen_producto(url_imagen, id_producto);
 
-        //return res.json(datos_model_tienda);
+        const datos_para_actualizar = { nombre_campo: "imagen_url", valor_campo: url_imagen };
+
+        const respuestaUpdatePost = await BlogModel02.actualizarPost(id_post, datos_para_actualizar);
 
         console.log("url de imagen subida: ", url_imagen);
 
-        return url_imagen;
-
+        return res.json(respuestaUpdatePost);
 
     }
 
-    static async modificarImagenProducto(req, res) {
-        const { file } = req;
-        const id_producto = req.params.id_producto;
-        const url_imagen = await uploadImage(file);
+    static async modificarImagenPost(req, res) {
+        const nombre_carpeta_blog = "img_blog_vilma25";
+        const { file } = req.file;
+        const id_post = req.params.id_post;
+        const url_imagen = await uploadImage(file, nombre_carpeta_blog);
 
         if (!url_imagen) {
             return res.status(500).json({ error: "Error al subir archivo" });
         }
-        const datos_model_tienda = await TiendaModel.modificar_imagen_producto(url_imagen, id_producto);
 
-        return res.json(datos_model_tienda);
+        // obtener url de imagen anterior con id_post
+
+        const url_img_para_borrar = await BlogModel02.obtenerUrlImagenPost(id_post);
+
+        // eliminar imagen anterior de Cludinary, pasando url de la imagen anterior
+
+        const result_delete_img = await eliminarImagen(url_img_para_borrar);
+
+        console.log("datos result al eliminar imagen: ", result_delete_img);
+
+        const datos_para_actualizar = { nombre_campo: "imagen_url", valor_campo: url_imagen };
+
+        const respuestaUpdatePost = await BlogModel02.actualizarPost(id_post, datos_para_actualizar);
+
+        return res.json(respuestaUpdatePost);
 
     }
 
-    static async ver_imagenes_por_carpeta(req, res) {
-        const nombreCarpeta = req.params.nombre_carpeta;
-        const imagenes_disponibles = await verImagenesDisponibles(nombreCarpeta);
-        return res.json(imagenes_disponibles);
-    }
 
     static async registrar_usuario_blog(req, res) {
 
         //const { username, password_user } = req.body;
 
-
         const datos_formulario_registro = req.body;
 
-        //console.log("datos formulario registro: ", datos_formulario_registro);
-
-        const datos_retorno_registro = await BlogModel.registrarUsuarioBlog(datos_formulario_registro);
-
-        //console.log("Nombre usuario: ", req.body.username);
-        //console.log("password: ", req.body.password_user);
-
-        console.log("datos retorno registro: ", datos_retorno_registro);
-
+        const datos_retorno_registro = await BlogModel02.registrarUsuarioBlog(datos_formulario_registro);
+        
         return res.json(datos_retorno_registro);
     }
 
     static async obtenerUsuarios(req, res) {
-        const datos_usuarios_blog = await BlogModel.obtenerUsuariosBlog();
+        const datos_usuarios_blog = await BlogModel02.obtenerUsuariosBlog();
 
         return res.json(datos_usuarios_blog);
     }
@@ -309,29 +233,22 @@ export class BlogController {
 
     static async login_usuario_blog(req, res) {
 
-        //console.log("datos ingresados: ", req.body); 
-
         const username = req.body.username;
         const password_ingresado = req.body.password_user;
 
-        //console.log("contraseña ingresada: ", password_ingresado);
-
-
-        const [datos_usuario_por_nombre] = await BlogModel.obtenerUsuarioByUsername(username);
-
-        //console.log("Datos Login: ", datos_usuario_por_nombre);
+        const [datos_usuario_por_nombre] = await BlogModel02.obtenerUsuarioByUsername(username);
 
         if (datos_usuario_por_nombre.length > 0) {
-            //console.log("El nombre de usuario existe en la base de datos"); 
+           
             if (datos_usuario_por_nombre[0].password === password_ingresado) {
-                //console.log("la contraseña es correcta"); 
+                
                 let respuesta_datos_ok = {
                     info_password: "password_ok",
                     info_usuario: datos_usuario_por_nombre[0].username
                 };
                 return res.json(respuesta_datos_ok);
             } else {
-                //console.log("La contraseña es incorrecta");
+                
                 let respuesta_password_null = {
                     info_password: "La contraseña ingresada es incorrecta",
                     info_usuario: datos_usuario_por_nombre[0].username
@@ -349,7 +266,6 @@ export class BlogController {
 
         return res.json(datos_usuario_por_nombre);
     }
-
 
 
 }

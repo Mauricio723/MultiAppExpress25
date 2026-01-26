@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog SurCode25</title>
+
+    <link rel="stylesheet" href="/estilos_css/bootstrap.min.css">
+
+    <!--<link rel="stylesheet" href="/estilos_css/estilos_main.css"> -->
+
+    <link rel="stylesheet" href="/estilos_css/colores_const.css">
+
+    <link rel="stylesheet" href="/estilos_css/estilos_blog.css">
+
+    <script>
+
+        function iniciarScript03() {
+            establecerAtosSesion();
+        }
+
+        function establecerDatosSesion() {
+            // recuperamos los datos de session
+            if (sessionStorage.getItem("datos_session_sc25") !== null) {
+                const datos_session = JSON.parse(sessionStorage.getItem("datos_session_sc25"));
+                //const id = datos_session.id;
+                const username = datos_session.username;
+                const rol = datos_session.rol;
+                //const token = datos_session.token;
+                const string_estado_session = "<div class='bg_black text_yellow'>"
+                    + "<p class='text-end mx-3 my-1 px-2 py-1'><span>"
+                    + "Sesión iniciada por: " + username + "</span><span class='mx-2'>rol: " + rol + "</span></p></div>";
+                document.getElementById("div_estado_session_01").innerHTML = string_estado_session;
+
+            } else {
+                document.getElementById("div_estado_session_01").innerHTML = "<p>No se ha iniciado una sesión</p>";
+            }
+
+        }
+
+        function eliminarDatosSession() {
+            console.log("Elimninando datos de session");
+            sessionStorage.removeItem("datos_session_sc25");
+        }
+
+        window.addEventListener("load", establecerDatosSesion, false);
+
+
+    </script>
+
+</head>
+
+<body class="bg_azure">
+
+    <header class="bg_dimgrey">
+        <div class="mx-1 my-1 px-1 py-1">
+            <h2 class="text_ghostwhite text-center">Blog SurCode25</h2>
+        </div>
+    </header>
+    <nav>
+        <div class="bg_white mx-1 my-1 px-1 py-1">
+            <span class="mx-1 my-1 px-1 py-1"><a href="#">Inicio</a></span>
+            <span class="mx-1 my-1 px-1 py-1"><a href="/blog/navegacion_blog">Navegación por el Blog</a></span>
+            <span class="mx-1 my-1 px-1 py-1"><a href="#">Enlace nav 03</a></span>
+            <span class="mx-1 my-1 px-1 py-1"><a href="/blog_02/mostrar_formulario_login">
+                    Iniciar Sesión</a></span>
+            <span class="mx-1 my-1 px-1 py-1"><a href="/blog_02/mostrar_formulario_registro/user_blog">
+                    Crear Cuenta de Usuario</a></span>
+        </div>
+    </nav>
+
+    <main class="bg_yellowgreen px-1 py-1">
+
+        <div id="div_estado_session_01"></div>
+
+        <div class="container-fluid">
+
+            <div class="row gx-0">
+
+                <div class="col-sm-12 col-md-9 col-lg-10 col-xl-10">
+
+                    <section class="">
+
+                        <div class="row gx-0">
+
+                            <div class="col-sm-12 col-md-3 col-lg-3 col-xl-2">
+
+                                <aside class="bg_azure mx-1 my-1 px-1 py-1">
+                                    <h6 class="text-center"><a href="/blog_02/mostrar_publicaciones_blog">
+                                            ver publicaciones</a></h6>
+                                    <p>sección aside section</p>
+                                    <p>sección aside section</p>
+                                    <p>sección aside section</p>
+                                    <p>sección aside section</p>
+                                    <p>sección aside section</p>
+                                    <p>sección aside section</p>
+                                    <p>sección aside section</p>
+                                </aside>
+
+
+                            </div>
+
+                            <div class="col-sm-12 col-md-9 col-lg-9 col-xl-10">
+
+                                <article class="bg_white mx-1 my-1 px-1 py-1">
+                                    <div>
+                                        <h4 class='mx-2 my-2 px-2 py-2'>Inicio Blog</h4>
+                                        <p class='px-2 py-2'>Bienvenidos al blog de SurCode25, aquí pueden encontrar
+                                            posteos de
+                                            los usuarios del sitio, ordenados por categorías. Para poder ver los
+                                            posteos, no es
+                                            necesario
+                                            crear una cuenta en este sitio; pero, si quieren crear comentarios para cada
+                                            publicación es
+                                            necesario crear un usuario e iniciar sesión.
+                                        </p>
+                                        <p class='px-2 py-2'>Para poder publicar un posteo, es necesario crear una
+                                            cuenta como
+                                            administrador
+                                            para esta sección (administrador de blog).
+                                            Por el momento este sitio está a prueba, por lo que no está disponibles la
+                                            cuentas
+                                            de
+                                            administrador.
+                                            Continuen visitandonos, ya que pronto estableceremos los enlaces necesarios,
+                                            y las
+                                            condiciones,
+                                            para
+                                            obtener una cuenta de administrador de sus propias publicaciones.
+                                        </p>
+                                    </div>
+                                </article>
+
+                            </div>
+
+                        </div>
+
+
+                    </section>
+
+                </div>
+
+                <div class="col-sm-12 col-md-3 col-lg-2 col-xl-2">
+
+                    <aside class="bg_cyan mx-1 my-1 px-1 py-1">
+                        <p>Sección aside main</p>
+                        <p>Sección aside main</p>
+                        <p>Sección aside main</p>
+                        <p>Sección aside main</p>
+                        <p>Sección aside main</p>
+                        <p>Sección aside main</p>
+                        <p>Sección aside main</p>
+                        <p>Sección aside main</p>
+                        <p>Sección aside main</p>
+                    </aside>
+
+                </div>
+
+            </div>
+
+            <section>
+
+                <article class="bg_darkslategrey mx-1 my-1 px-1 py-1">
+
+                    <div class="row gx-0 bg_yellowgreen">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="mx-2 my-1 px-1 py-1" id="div_boton_publicaciones">
+
+                                <a href="/blog_02/mostrar_publicaciones_blog">
+                                    <h5 class="text-center bg_aliceblue rounded py-1">mostrar publicaciones blog</h5>
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="mx-2 my-1 px-1 py-1" id="div_boton_categorias">
+                                <a href="/blog_02/mostrar_formulario_nuevo_post">
+                                    <h5 class="text-center bg_aliceblue rounded py-1">Agregar nuevo post</h5>
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </article>
+
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <footer class="bg_dimgrey">
+        <div class="mx-1 my-1 px-1 py-1">
+            <h5 class="text_honeydew">Proyecto: Blog de SurCode25</h5>
+            <h5 class="text_ivory">Autor: Salvador Mauricio Vilches Jerez</h5>
+            <h5 class="text_lavender">Fecha publicación: En etapa de desarrollo desde 10/05/2025</h5>
+        </div>
+    </footer>
+
+    <script src="/scripts_js/bootstrap.bundle.js"></script>
+
+    <script>
+
+        function obtenerPosteosDeUsuario(id_autor, usernameAutor) {
+            //console.log("obteniendo posteos del usuario: ", id_autor);
+
+            const string_url = "/blog/obtener_titulos_posteos_por_usuario/" + id_autor;
+
+            fetch(string_url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(datosRecibidos => {
+                    console.log("datos obtenidos: ", datosRecibidos);
+
+                    let string_titulos_posteos = "";
+
+                    datosRecibidos.forEach(datos => {
+                        string_titulos_posteos +=
+                            "<p class='px-2 py-2'>"
+                            + datos.id_post + " - "
+                            + "<button onclick='obtenerPostSeleccionado(" + datos.id_post + ")'>"
+                            + datos.titulo + "</button></p>";
+                    });
+
+                    let string_article_publicaciones = "<article class='bg_white mx-2 my-2 px-2 py-2'>"
+                        + "<h4 class='mx-2 my-2 px-2 py-2'>Publicaciones de " + usernameAutor + "</h4>"
+                        + string_titulos_posteos + "</article>";
+
+                    document.getElementById("div_article_posteos").innerHTML = string_article_publicaciones;
+
+                })
+                .catch(error => {
+                    console.error("error al obtener datos: ", error);
+                });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

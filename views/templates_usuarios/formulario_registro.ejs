@@ -17,15 +17,15 @@
 
 </head>
 
-<body class="bg_silver" onload="definir_tipo_formulario('<%= tipo_formulario %>', '<%= rol_usuario %>')">
+<body class="bg_silver">
 
-    <!-- al cargar esta página se define el tipo de formulario con la función definir_tipo_formulario -->
-    <!-- Recordar que esto es posible porque los dos formularios tienen los mismos campos, 
-      Si el formulario registro tuviese más campos, se tendría que hacer de otra forma -->
-
+   
     <header class="px-1 py-1 bg_darkslategrey text_gainsboro">
         <div class="mx-1 my-1 px-1 py-1">
-            <h3 class="text-center">Formulario para registro y login de usuarios</h3>
+            <h3 class="text-center">Formulario para registro de usuario</h3>
+
+            <h5>Rol de Usuario: <%= rol_usuario %></h5>
+
         </div>
     </header>
 
@@ -33,17 +33,11 @@
         <section class="mx-1 my-1 px-1 py-1">
             <article class="bg_azure px-1 py-1">
 
-                <div class="mx-1 my-1 px-1 py-1">
-                    <h4 class="mx-2 px-1 py-1">
-                        <%= tipo_formulario %>
-                    </h4>
-                    <h4>Rol de Usuario: <%= rol_usuario %>
-                    </h4>
-                </div>
-
+                
+               
                 <div class="bg_darkseagreen mx-2 my-2 px-2 py-2 rounder-3">
 
-                    <form id="id_formulario_usuario" method="post">
+                    <form id="id_formulario_registro" method="post">
 
                         <div class="bg_steelblue text_floralwhite mx-1 my-1 px-1 py-1 rounded-3"
                             id="div_input_username">
@@ -68,6 +62,17 @@
                             </div>
                         </div>
 
+                        <div class="bg_steelblue text_floralwhite mx-1 my-1 px-1 py-1 rounded-3">
+                            <div class="mx-2 my-2 row">
+                                <label for="rol_usuario" class="col-sm-2 col-form-label">rol de usuario</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control"name="rol_usuario"
+                                        value="<%= rol_usuario %>" required readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+
                         <div class="bg_steelblue text_floralwhite mx-2 my-2 px-1 py-1 rounded-3">
                             <div class="d-grid d-md-flex justify-content-md-end me-2">
                                 <button type="submit" class="btn btn-light my-2">Enviar Datos</button>
@@ -86,91 +91,37 @@
 
     <footer class="bg_darkslategrey text_gainsboro px-1 py-1">
         <div class="mx-1 my-1 px-1 py-1">
-            <p>Formulario para registro y login de usuarios del blog</p>
+            <p>Formulario para registrode usuarios del blog</p>
             <p>Autor: Salvador Mauricio Vilches Jerez</p>
             <p>Página para formulario de usuarios del blog para el proyecto app_web_express_25</p>
         </div>
     </footer>
 
     <script>
+              
 
-        let tipoFormulario = "";
-
-        let rolUsuario = "";
-
-        function definir_tipo_formulario(tipo_formulario, rol_usuario) {
-            tipoFormulario = tipo_formulario;
-            rolUsuario = rol_usuario; 
-            console.log("tipo de formulario: ", tipoFormulario); 
-            console.log("Ro de usuario: ", rolUsuario); 
-        }
-
-       
-
-        //console.log("sección: ", seccion); 
-
-        const formulario_nuevo_usuario = document.getElementById("id_formulario_usuario");
+        const formulario_nuevo_usuario = document.getElementById("id_formulario_registro");
 
         formulario_nuevo_usuario.addEventListener("submit", function (event) {
             event.preventDefault();    // Evita el envío del formulario por defecto 
 
             const myFormData = new FormData(event.currentTarget);
 
-            myFormData.append("rol_usuario", rolUsuario); 
+            //myFormData.append("rol_usuario", rolUsuario); 
 
-            let ruta_datos_formulario = "";
+            //let ruta_datos_formulario = "";
 
-            if (tipoFormulario === "formulario_registro") {
-                ruta_datos_formulario = "/usuarios/registrar_usuario";
-            }
-            if (tipoFormulario === "formulario_login") {
-                ruta_datos_formulario = "/usuarios/login_usuario";
-            }
+           
 
-
-            fetch(ruta_datos_formulario, {
+            fetch("/usuarios/registrar_usuario", {
                 method: "POST",
                 body: myFormData
             })
                 .then(response => response.json())
                 .then(data => {
-                    //console.log("Datos obtenidos al enviar el formulario : ", data);
-
-
-
-                    if (tipoFormulario === "formulario_login") {
-
-                        console.log("datos del token: ", data);
-
-                        sessionStorage.setItem("token", data.token);
-
-                        obtenerUsuarios();
-
-                        /*
-                        if (data.info_password === "password_ok") {
-                            sessionStorage.setItem("usuario", data.info_usuario);
-                            sessionStorage.setItem("estado", data.info_password);
-                            window.location.assign("/blog/obtener_posteos");
-                        } else {
-                            let mensaje_respuesta = "<h5>" + data.info_usuario + "</h5><h5>" 
-                                + data.info_password + "</h5>";
-                            document.getElementById("div_mensaje_formulario_01").innerHTML = mensaje_respuesta;
-
-                            document.getElementById("div_input_password").classList.add("borde_rojo");
-                                                   
-                        }
-
-                        */
-
-
-                    }
-
-                    if (tipoFormulario === "formulario_registro") {
-                        console.log("los datos son correctos, pero como es una prueba no vamos a hacer nada");
-                        //window.location.assign("/usuarios/mostrar_formulario_login");
-                        console.log("datos obtenidos del servidor: ", data);
-                    }
-
+                    
+                    console.log("Datos obtenidos al enviar el formulario : ", data);
+                  
                     // redireccionamos hacia la ruta que nos muestra todas las fraces
                     //window.location.assign("/blog/obtener_posteos");
 

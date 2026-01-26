@@ -34,9 +34,10 @@ export class UsuariosController {
         const rolUsuario = req.body.rol_usuario;
 
         // obtenemos lod datos de usuarios de la base de datos 
-        const datoUsuario = await UsuariosModell.obtenerUsuarioPorUsername(username);
+        const datosDeUsuario = await UsuariosModell.obtenerUsuarioPorUsername(username);
         // verificamos si el username ingresado existe en la base de datos
-        if (datoUsuario[0].length > 0) {
+       
+        if (datosDeUsuario.length > 0) {
             res.json({ mensaje: "El nombre de ussuario ingresado ya existe en la base de datos" });
         } else {
             // Encriptar la contraseña 
@@ -104,7 +105,7 @@ export class UsuariosController {
         const token = jwt.sign(
             { id: datosUsuario[0].id_user, username: datosUsuario[0].username }, 
             process.env.SECRET_KEY_JWT, 
-            { expiresIn: "1h" }
+            { expiresIn: "3h" }
         );
         // construimos un objeto con los datos para enviar en la respuesta
         const datos_token = { 

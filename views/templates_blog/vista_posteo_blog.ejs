@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Publicaciones Blog</title>
+
+    <link rel="stylesheet" href="/estilos_css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/estilos_css/colores_const.css">
+
+    <style>
+        .imagen_post {
+            width: 100%;
+        }
+
+        .div_nav_01 {
+            background-color: rgb(188, 205, 231);
+
+        }
+
+        .ul_nav {
+            list-style: none;
+            overflow: hidden;
+        }
+
+        .ul_nav li {
+            float: left;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+        }
+
+        .ul_nav li a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: rgb(45, 63, 63);
+        }
+
+        .ul_nav li a:hover {
+            background-color: rgb(78, 99, 99);
+            color: rgb(215, 230, 118);
+        }
+        
+
+        .texto_justificado {
+            text-align: justify;
+        }
+        
+    </style>
+
+    <script>
+        function establecerDatosSesion() {
+            // recuperamos los datos de session
+            if (sessionStorage.getItem("datos_session_sc25") !== null) {
+                const datos_session = JSON.parse(sessionStorage.getItem("datos_session_sc25"));
+                //const id = datos_session.id;
+                const username = datos_session.username;
+                const rol = datos_session.rol;
+                //const token = datos_session.token;
+                const string_estado_session = "<div class='bg_black text_yellow'>"
+                    + "<p class='text-end mx-3 my-1 px-2 py-1'><span>"
+                    + "Sesión iniciada por: " + username + "</span><span class='mx-2'>rol: " + rol + "</span></p></div>";
+                document.getElementById("div_datos_session").innerHTML = string_estado_session;
+
+                if (rol === "admin_blog") {
+                    let stringControlesAdmin = "<a class='btn btn-outline-primary mx-2' role='button' "
+                        + "href='/blog_02/mostrar_pagina_update_post/<%= datos_post.id_post %>'>"
+                        + "Editar este Post </a>"
+                        + "<a class='btn btn-outline-primary mx-2' role='button'" 
+                        +" href='/blog_02/mostrar_formulario_nuevo_post'>agregar nuevo post</a>";
+                    document.getElementById("div_controles_admin").innerHTML = stringControlesAdmin;
+                }
+            } else {
+                document.getElementById("div_datos_session").innerHTML = "<p>No se ha iniciado una sesión</p>";
+            }
+
+        }
+
+        window.addEventListener("load", establecerDatosSesion, false);
+
+    </script>
+
+
+</head>
+
+<body class="bg_beige">
+
+    <header class="bg_grey text_cyan">
+        <div class="mx-1 my-1 px-1 py-1">
+            <h4 class="text-center">Blog de SurCode</h4>
+        </div>
+
+    </header>
+
+    <nav>
+        <div class="div_nav_01">
+            <ul class="ul_nav">
+                <li><a href="/blog_02/inicio_blog">inicio</a></li>
+                <li><a href="#">enlace nav 02</a></li>
+
+                <li><a href="/blog_02/mostrar_formulario_login">iniciar sesión</a></li>
+                <li><a href="/blog_02/mostrar_formulario_registro/admin_blog">registro usuario admin</a></l>
+                <li><a href="/blog_02/mostrar_formulario_registro/user_blog">registro de usuario user</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="bg_aquamarine">
+
+        <div id="div_datos_session">
+        </div>
+
+        <div class="container-fluid">
+
+            <div class="row gx-0">
+
+                <div class="col-sm-12 col-md-9 col-lg-10">
+
+                    <section class="">
+
+                        <div class="row gx-0">
+
+                            <div class="col-sm-12 col-md-4 col-lg-3">
+                                <aside>
+                                    <div class="mx-1 my-1 px-1 py-1 bg_azure">
+                                        <a href="/blog_02/mostrar_publicaciones_blog" class="">
+                                            Mostrar todas las publicaciones</a>
+                                    </div>
+                                </aside>
+                            </div>
+
+                            <div class="col-sm-12 col-md-8 col-lg-9">
+
+                                <article class="bg_grey mx-1 my-1 px-1 py-1">
+
+                                    <div class="bg_white mx-2 my-2 px-1 py-1 rounded-2">
+
+                                        <div class="mx-1 my-1 px-1 py-1">
+                                            <p class="mx-1 my-1">id: <%= datos_post.id_post %>
+                                            </p>
+                                        </div>
+
+                                        <div class="mx-1 my-1 px-1 py-1">
+                                            <h3 class="text-center">
+                                                <%= datos_post.titulo %>
+                                            </h3>
+                                        </div>
+
+                                        <div class="mx-1 my-1 px-1 py-1">
+
+                                            <% if (datos_post.imagen_url !=="sin_imagen" &&
+                                                datos_post.imagen_url.length> 3) { %>
+                                                <div class="mx-2 my-2">
+                                                    <img class="imagen_post" src="<%= datos_post.imagen_url %>"
+                                                        alt="imagen del post">
+                                                </div>
+                                                <% } %>
+                                        </div>
+
+
+
+                                        <div class="mx-2 my-2 px-2 py-2">
+                                            <p class="texto_justificado">
+                                                <%= datos_post.contenido_01 %>
+                                            </p>
+                                        </div>
+
+                                        <div class="mx-1 my-1 px-1 py-1">
+                                            <h6>autor: <%= datos_post.username %>
+                                            </h6>
+                                            <!--
+                                            <h5>id_autor: <%= datos_post.id_autor %>
+                                            </h5>
+                                            -->
+                                        </div>
+
+                                        <div class="mx-1 my-1 px-1 py-1">
+                                            <p>fecha publicación: <%= datos_post.fecha_publicacion %>
+                                            </p>
+                                        </div>
+
+                                        <div class="mx-2 my-1 px-2 py-2 bg_green text_white">
+                                            <h6>Categorias</h6>
+
+                                            <% datos_post.categorias.forEach(categoria=> { %>
+
+                                                <span class="mx-2 my-2 px-1 py-1">
+                                                   <!-- id: <%= categoria.id_cat %> - categoría: -->
+                                                    <%= categoria.categoria %>
+                                                </span>
+
+                                                <% }) %>
+                                        </div>
+
+                                        <div id="div_controles_admin" class="bg_lavender mx-1 my-1 px-1 py-1">
+                                        </div>
+
+
+                                    </div>
+
+                                </article>
+
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+                <div class="col-sm-12 col-md-3 col-lg-2">
+
+                    <div class="mx-1 my-1 px-1 py-1 bg_azure text_green">
+                        <p>Sección para navegación externa</p>
+                        <a href="/blog_02/obtener_posteos_por_usuario/<%= datos_post.id_autor %>" class="">
+                            ver publicaciones de <%= datos_post.username %>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <footer class="bg_grey">
+        <div class="mx-2 my-2 px-2 py-2 text_white">
+            <p>Proyecto: MultiWebSurCode - Sección: Blog</p>
+            <p>Autor: Salvador Mauricio Vilches Jerez</p>
+            <p>Fecha publicación: actualmente, en etapa de desarrollo</p>
+        </div>
+    </footer>
+
+
+
+    <script src="/scripts_js/bootstrap.bundle.js"></script>
+
+</body>
+
+</html>

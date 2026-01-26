@@ -55,7 +55,7 @@ app.get("/crear_tabla_usuarios_blog", async (req, res) => {
 app.get("/crear_tabla_blog_posteos", async (req, res) => {
   // esta tabla se relaciona con usuarios_blog (uno a muchos)
   const string_query = "CREATE TABLE blog_posteos (id_post INT AUTO_INCREMENT PRIMARY KEY, " 
-                      + "titulo VARCHAR(100) NOT NULL, contenido_01 VARCHAR(500) NOT NULL, " 
+                      + "titulo VARCHAR(100) NOT NULL, contenido_01 TEXT NOT NULL, " 
                       + "imagen_url VARCHAR(200) DEFAULT 'sin_imagen', " 
                       + "fecha_publicacion VARCHAR(100) DEFAULT 'fecha_sin_definir', "
                       + "usuario_id binary(16) NOT NULL, FOREIGN KEY (usuario_id) REFERENCES usuarios(id));";

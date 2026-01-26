@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Update Post</title>
+
+    <link rel="stylesheet" href="/estilos_css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/estilos_css/estilos_blog.css">
+
+    <link rel="stylesheet" href="/estilos_css/colores_const.css">
+
+    <style>
+        .estilo_textarea_01 {
+            width: 100%;
+            height: 300px;
+        }
+
+        .modal_edit_post {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(193, 219, 217, 0.76);
+        }
+
+        .contenido_modal_edit {
+            background-color: #fefefe;
+            width: 70%;
+            margin: 12% auto;
+            padding: 10px;
+            border: 1px solid #888;
+            border-radius: 10px;
+        }
+
+        .div_boton_close_modal {
+            display: flex;
+            justify-content: flex-end;
+            padding: 3px;
+        }
+
+        .boton_close_modal {
+            color: #aaa;
+            font-size: 30px;
+            font-weight: bold;
+            padding: 5px;
+        }
+
+        .boton_close_modal:hover {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* estilos para personalizar el input file */
+
+        /* Ocultar el input file */ 
+        .input_file_img {
+            display: none;
+        }
+
+        /* Estilo para el label que actúa como botón */
+        .label_input_file_img {
+            display: inline-block;
+            position: relative;
+            padding: 5px 10px;
+            background-color: #007BFF;
+            z-index: 10; 
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            /*transition: background-color 0.3s ease;*/
+        }
+
+        /* Efecto hover */
+        .label_input_file_img:hover {
+            background-color: #0056b3;
+        }
+
+        /* Estilo para mostrar el nombre del archivo seleccionado */       
+        .span_img_nombre {
+            color: rgb(30, 44, 5);
+            font-size: 16px;
+        }
+    </style>
+
+    <script>
+
+        function iniciarScriptUpdate() {
+            const id_post = document.getElementById("input_id_post_01").value;
+            const url_para_obtener_post = "/blog_02/obtener_post_por_id_post/" + id_post;
+
+            fetch(url_para_obtener_post, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then((datos_post) => {
+                    establecerDatosIniciales(datos_post);
+                })
+                .catch(error => {
+                    console.error("Ocurrió un error al obtener datos: ", error);
+                });
+        }
+
+        function establecerDatosIniciales(datos_post) {
+            mostrarTituloInicial(datos_post.titulo);
+            mostrarContenidoInicial(datos_post.contenido_01);
+            mostrarImagenInicial(datos_post.imagen_url);
+        }
+
+        function mostrarTituloInicial(titulo) {
+            let stringTituloInicial = "<div class='mx-1 my-1 px-1 py-1'>"
+                + "<div class='bg_whitesmoke text_darkcyan mx-1 my-2 px-1 py-1'><h4 class='text-center'>"
+                + titulo + "</h4></div>"
+                + "<div class='contenedor_boton'><span id='span_boton_editar_titulo' class='elemento_boton span_editar_post'>"
+                + "Editar título</span></div></div>";
+
+            document.getElementById("div_post_titulo").innerHTML = stringTituloInicial;
+
+            document.getElementById("span_boton_editar_titulo").addEventListener("click", () => {
+
+                mostrarModalEditPost();
+
+                let stringEdicionTitulo = "<div class='bg_dimgrey px-2 py-2' >"
+                    + "<p class='text_azure' >Título actual: " + titulo + "</p>"
+                    + "<div class='mx-1 my-1 px-1 py-1'>"
+                    + "<input type='text' id='id_elemento_entrada' class='form-control' "
+                    + "name='titulo' placeholder='ingresar título actualizado' required ></div>"
+                    + "<div id='div_botones_edit_post'>"
+                    + " </div></div>";
+
+                document.getElementById("div_edit_campo_post").innerHTML = stringEdicionTitulo;
+
+                mostrarBotonesEditPost();
+
+            }, false);
+
+        }
+
+        function mostrarContenidoInicial(contenido_inicial) {
+
+            let stringContenidoInicial = "<div>"
+                + "<div class='bg_white text_darkgreen mx-1 my-1 px-1 py-1'>"
+                + "<p class='texto_justificado px-1 py-1'>" + contenido_inicial + "</p>" + "</div>"
+                + "<div class='contenedor_boton'>"
+                + "<span class='elemento_boton'id='id_boton_editar_contenido'>"
+                + "editar contenido</span>" + "</div>"
+                + "</div>";
+
+            document.getElementById("div_post_contenido").innerHTML = stringContenidoInicial;
+
+            document.getElementById("id_boton_editar_contenido").addEventListener("click", () => {
+
+                mostrarModalEditPost();
+
+                let stringContenidoEdit = "<div class='bg_dimgrey px-2 py-2' >"
+                    + "<textarea class='estilo_textarea_01' "
+                    + " id='id_elemento_entrada'name='contenido_01'>"
+                    + contenido_inicial + "</textarea>"
+                    + "<div id='div_botones_edit_post'>"
+                    + " </div></div>";
+
+                document.getElementById("div_edit_campo_post").innerHTML = stringContenidoEdit;
+
+                mostrarBotonesEditPost();
+
+            }, false);
+
+        }
+
+
+        function mostrarImagenInicial(url_imagen) {
+
+            let stringSeccionImagen = "";
+            let stringAccionImagen = "";
+
+            if (url_imagen === "sin_imagen" || url_imagen.length < 10) {
+
+                stringSeccionImagen = "<div class='mx-1 my-1 px-1 py-1 bg_grey text_azure'>"
+                    + "<div><h5 class='text-center'>Publicación sin imagen</h5></div>"
+                    + "<div class='contenedor_boton'>"
+                    + "<span id='boton_seleccionar_imagen' class='elemento_boton'>Agregar una imagen</span></div>"
+                    + "</div>";
+
+                stringAccionImagen = "imagen_agregada";
+
+            } else {
+                stringSeccionImagen = "<div>"
+                    + "<div class='mx-1 my-1'>"
+                    + "<img src='" + url_imagen + "' class='imagen_post' alt='imagen de este post' >"
+                    + "</div>"
+                    + "<div class='contenedor_boton'><span id='boton_seleccionar_imagen' class='elemento_boton'>"
+                    + "Cambiar Imagen</span></div>"
+                    + "</div>";
+
+                stringAccionImagen = "imagen_modificada";
+
+            }
+
+            //console.log("url imagen: ", url_imagen); 
+
+            document.getElementById("div_post_imagen_url").innerHTML = stringSeccionImagen;
+
+            document.getElementById("boton_seleccionar_imagen").addEventListener("click", () => {
+                mostrarModalEditPost();
+
+                let stringSeleccionarImagen = "<div class='my-2' >"
+                    + "<div class='bg_beige mx-1 my-1 px-1 py-1'>"
+                    + "<input type='file' id='id_elemento_entrada' class='input_file_img' name='imagen_post' required >" 
+                    + "<label for='id_elemento_entrada' class='label_input_file_img' >Seleccionar Imagen</label>" 
+                    + "<span id='span_nombre_imagen' class='span_img_nombre mx-2 px-1 py-1 ' ></span> </div>"
+                    + "<div class='mx-2 my-2'>"
+                    + " <img id='imagePreview' src='#' alt='Previsualización' width='300px'>"
+                    + "</div>"
+                    + "<div id='div_botones_edit_post' class='my-2' ></div>"
+                    + "</div>";
+
+                document.getElementById("div_edit_campo_post").innerHTML = stringSeleccionarImagen;
+
+                mostrarBotonesEditPost();
+
+                document.getElementById("id_elemento_entrada").addEventListener('change', function (event) {
+
+                    // mostrar nombre imagen 
+                    const nombre_imagen = this.files[0].name;
+                    document.getElementById("span_nombre_imagen").innerHTML = nombre_imagen;
+
+                    // se muestra la vista previa de la imagen seleccionada
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        let output = document.getElementById('imagePreview');
+                        output.src = reader.result;
+                        output.style.display = 'block';
+                    }
+                    reader.readAsDataURL(event.target.files[0]);
+                });
+
+            }, false);
+
+        }
+
+        function mostrarBotonesEditPost() {
+
+            let stringBotonesEditPost = "<div class='row gx-0' >"
+                + "<div class='col-sm-12 col-md-6' >"
+                + " <span class='span_boton_01' id='span_cancelar_edit' >Cancelar edición</span> </div> "
+                + "<div class='col-sm-12 col-md-6' >"
+                + " <button class='estilo_boton_01' type='submit'id='id_boton_enviar_datos' disabled >"
+                + " Enviar modificación</button> </div> "
+                + " </div>";
+
+            document.getElementById("div_botones_edit_post").innerHTML = stringBotonesEditPost;
+
+            document.getElementById("span_cancelar_edit").addEventListener("click", () => {
+                cerrarModalEditPost();
+            }, false);
+
+            document.getElementById("id_elemento_entrada").addEventListener("input", () => {
+                document.getElementById("id_boton_enviar_datos").removeAttribute("disabled");
+            }, false);
+
+        }
+
+        function mostrarModalEditPost() {
+            document.getElementById('id_modal_edit_post').style.display = 'block';
+
+            document.querySelector('.boton_close_modal').addEventListener('click', function () {
+                document.getElementById("div_edit_campo_post").innerHTML = "";
+                document.getElementById('id_modal_edit_post').style.display = 'none';
+            });
+
+        }
+
+        function cerrarModalEditPost() {
+            document.getElementById("div_edit_campo_post").innerHTML = "";
+            document.getElementById('id_modal_edit_post').style.display = 'none';
+        }
+
+        window.addEventListener("load", iniciarScriptUpdate, false);
+
+    </script>
+
+</head>
+
+<body>
+    <header class="bg_brown text_lavender px-1 py-1">
+        <div>
+            <h3 class="text-center">Blog SurCode25</h3>
+        </div>
+    </header>
+    <nav class="bg_blue text_lavender px-1 py-1">
+        <h4 class="">Sección nav</h4>
+    </nav>
+    <main class="bg_azure px-1 py-1">
+
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-12 col-md-8 col-lg-9 border border-danger">
+
+                    <section>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 col-lg-3 border">
+
+                                <aside>
+                                    <p>sección aside section</p>
+                                </aside>
+
+                            </div>
+                            <div class="col-sm-12 col-md-8 col-lg-9 border">
+
+                                <article class="bg_white">
+
+                                    <div class="mx-1 my-1">
+
+                                        <div id="id_modal_edit_post" class="modal_edit_post">
+                                            <div class="contenido_modal_edit">
+                                                <div class="div_boton_close_modal">
+                                                    <span class="boton_close_modal">&times;</span>
+                                                </div>
+                                                <form id="formulario_update_post">
+                                                    <div id="div_edit_campo_post"></div>
+                                                </form>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="mx-1 my-1 px-1 py-1 bg_grey text_azure">
+                                            <label class="mx-2">id post seleccionado =></label>
+                                            <input type="number" id="input_id_post_01" value="<%= id_post_blog %>"
+                                                readonly>
+                                        </div>
+
+                                        <div class="mx-1 my-1 px-1 py-1 bg_beige">
+
+                                            <div id="div_post_titulo" class="bg_darkkhaki mx-1 my-1 px-1 py-1">
+                                            </div>
+                                            <div id="div_post_imagen_url" class="bg_darkkhaki mx-1 my-1 px-1 py-1">
+                                            </div>
+
+                                            <div id="div_post_contenido" class="bg_darkkhaki mx-1 my-1 px-1 py-1">
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </article>
+
+                            </div>
+
+                        </div>
+                    </section>
+
+                </div>
+
+                <div class="col-sm-12 col-md-4 col-lg-3 border border-info">
+
+                    <p>sección aside main</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+    <footer class="bg_brown text_lavender">
+        <div>
+            <h5>Proyecto: Blog SurCode25</h5>
+            <h5>Sección: Página de actualización de publicaciones</h5>
+            <h5>Autor: Salvador Mauricio Vilches Jerez</h5>
+        </div>
+    </footer>
+
+    <script>
+
+        document.getElementById("formulario_update_post").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formDataUpdate = new FormData(this);
+
+            let id_post = document.getElementById("input_id_post_01").value;
+
+            const ruta_envio_datos = "/blog_02/actualizar_post/" + id_post;
+
+            fetch(ruta_envio_datos, {
+                method: "PATCH",
+                body: formDataUpdate
+            })
+                .then(response => response.json())
+                .then(datos => {
+                    console.log("Datos de retorno: ", datos);
+                    //iniciarScriptUpdate();
+                    window.location.assign("/blog_02/mostrar_post_seleccionado/" + id_post);
+
+                })
+                .catch(error => {
+                    console.error("Error al enviar datos: ", error);
+                });
+
+        });
+
+    </script>
+
+
+    <script src="/scripts_js/bootstrap.bundle.js"></script>
+
+</body>
+
+</html>

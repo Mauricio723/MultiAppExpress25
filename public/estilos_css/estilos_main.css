@@ -1,63 +1,7 @@
-* {
-    margin: 0px;
-    padding: 0px;
+.elemento_onclick {
+    cursor: pointer;
 }
-
-/*
-.estilo_body {
-    background-color: rgb(217, 235, 234);    
+.elemento_onclick:hover {
+    background-color: rgb(68, 71, 19);
+    color: rgb(234, 238, 224);
 }
-.estilo_titulo {
-    text-align: center;
-}
-.estilo_subtitulo {
-    color: rgb(17, 67, 143);
-    margin-left: 20px;
-    padding: 5px;
-}
-
-.estilo_header {
-    background-color: rgb(9, 65, 75);
-    color: rgb(203, 226, 102); 
-    padding: 10px;
-}
-.estilo_main {
-    background-color: rgb(161, 211, 180);    
-    padding: 5px;
-}
-.estilo_section {
-    padding: 5px;
-}
-.div_section_01 {
-    margin: 5px;
-    padding: 5px;
-}
-.estilo_article {
-    background-color: rgb(209, 223, 186);
-    margin: 5px;
-    padding: 5px;
-}
-.div_article_01 {
-    margin: 5px;
-    padding: 5px;
-}
-.div_article_02 {
-    margin: 5px;
-    padding: 5px;
-    border: 1px solid rgb(47, 47, 121);
-}
-.estilo_parrafo {
-    background-color: rgb(187, 208, 228);
-    color: rgb(36, 36, 51);
-    padding: 5px;
-}
-.estilo_footer {
-    background-color: rgb(22, 45, 46);
-    color: rgb(230, 233, 225);
-    padding: 5px;
-}
-.div_footer_01 {    
-    margin: 5px;
-    padding: 5px;
-}
-*/

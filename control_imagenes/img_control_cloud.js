@@ -47,10 +47,22 @@ const uploadImage = async (file, nombre_carpeta_cloud) => {
     }
 };
 
+ const obtenerPublicIdImg = (url_imagen) => {
+     // Con lo siguiente, obtengo el valor de public_id de la imagen, el cual está 
+     // contenido dentro de la url de la imagen obtenida en Cloudinary 
+    let posicion_ultimo_punto  = url_imagen.lastIndexOf(".");
+    let posicion_ultima_barra = url_imagen.lastIndexOf("/");
+    let posicion_anteultima_barra = url_imagen.lastIndexOf("/", posicion_ultima_barra - 1);
+    let public_id_img = url_imagen.substring(posicion_anteultima_barra + 1, posicion_ultimo_punto);
+
+    return public_id_img;
+  }
+
 // Eliminación de una imagen por su: public_id
  
-const eliminarImagen = async (public_id) => {
+const eliminarImagen = async (url_imagen) => {
     try {
+        const public_id = obtenerPublicIdImg(url_imagen);
         const result = await cloudinary.v2.uploader.destroy(public_id);
         return result;
         

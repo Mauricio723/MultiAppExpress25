@@ -5,7 +5,6 @@ import "dotenv/config";
 
 export const verificar_token = (req, res, next) => {
 
-
     const authHeader = req.header("Authorization") || "";
 
     const token = authHeader.split(" ")[1];

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Formulario post</title>
+
+    <link rel="stylesheet" href="/estilos_css/bootstrap.min.css">
+    <link rel="stylesheet" href="/estilos_css/colores_const.css">
+
+    <!--<link rel="stylesheet" href="/estilos_css/estilos_blog.css">-->
+
+    <link rel="stylesheet" href="/estilos_css/estilos_main.css">
+
+    <script>
+
+         function iniciarScriptNuevoPost() {
+
+            establecerDatosSession();
+            obtenerCategoriasBlog();
+        }
+
+         function establecerDatosSession() {
+
+            if (window.sessionStorage != null) {
+
+                if (sessionStorage.getItem("datos_session_sc25")) {
+
+                    const datos_session = JSON.parse(sessionStorage.getItem("datos_session_sc25"));
+                    const nombreUsuario = datos_session.username;
+                    const idUsuario = datos_session.id;
+
+                    let string_cabecera = "<h5 class='text-end mx-3 my-1 px-1 py-1'>Sesión iniciada por: "
+                        + nombreUsuario + "</h5>";
+
+                    document.getElementById("div_datos_session").innerHTML = string_cabecera;
+
+                    let string_input_autor = " <div class='mb-3 ms-1 me-1'>"
+                        + "<label for='autor' class='form-label'>Autor del post</label>"
+                        + "<input type='text' class='form-control' name='autor' value='"
+                        + nombreUsuario + "' readonly></div>"
+                        + " <div class='mb-3 ms-1 me-1'>"
+                        + "<input type='text' class='form-control' name='id_autor' value='"
+                        + idUsuario + "' readonly hidden></div>";
+                    document.getElementById("div_input_autor").innerHTML = string_input_autor;
+                } else {
+                    let string_datos_session = "<h5 class='bg_yellow text_green text-center mx-1 my-1 py-2 border'>" 
+                        + "Sesión no iniciada, debe iniciar una sesión para enviar los datos.</h5>";
+                    document.getElementById("div_datos_session").innerHTML = string_datos_session;
+                }
+            } else {
+                let string_datos_session = "<h5>No se pudieron obtener los dats de sessión, "
+                    + "Este navegador no tiene soporte para sessionStorage</h5>";
+                document.getElementById("div_datos_session").innerHTML = string_datos_session;
+            }
+        }
+
+          // ############ sección para categorías  ############
+
+        function obtenerCategoriasBlog() {
+
+            fetch("/blog_02/obtener_categorias_blog", {
+                method: "GET"
+            })
+                .then(response => response.json())
+                .then(categorias_existentes => {
+                    establecerCategoriasBlog(categorias_existentes);
+                })
+                .catch(error => {
+                    console.error("Error al obtener datos: ", error);
+                });
+        }
+
+        function establecerCategoriasBlog(categorias_existentes) {
+
+            let stringOptionCategorias = "";
+
+            categorias_existentes.forEach(categoria => {
+
+                let stringValueOption = '{ "id": "' + categoria.id_categoria + '", "nombre": "'
+                    + categoria.nombre_categoria + '" }';
+
+                stringOptionCategorias += "<option id='idcat_"
+                    + categoria.id_categoria + "' value = '" + stringValueOption + "'>"
+                    + categoria.nombre_categoria + "</option>";
+
+            });
+
+            let stringSelectCompleto = "<select class='form-select'"
+                + " aria-label='Default select example' "
+                + "onchange='agregarCategoria(value)'>"
+                + "<option disabled selected>Seleccionar Categoría</option>"
+                + stringOptionCategorias
+                + "</select>";
+
+            document.getElementById("div_select_categorias").innerHTML = stringSelectCompleto;
+
+            // creamos un formulario para obtener nombres de categorías para comparación
+
+            let stringInputsFormCategorias = "";
+
+            categorias_existentes.forEach((categoria) => {
+                stringInputsFormCategorias += "<input type='text' value='" + categoria.nombre_categoria
+                    + "' name='categorias' hidden class='ms-1 mt-1' >";
+            });
+
+            document.getElementById("div_form_categorias").innerHTML = "<form id='id_formulario_categorias' >"
+                + stringInputsFormCategorias + "</form>";
+
+        }
+
+        function agregarCategoria(categoria_seleccionada) {
+            let categoria = JSON.parse(categoria_seleccionada);
+
+            const nombre_categoria = categoria.nombre;
+            const id_categoria = categoria.id;
+
+            eliminarMensajeFaltaCategoria();
+
+            // agregamos la categoria en el input
+            agregarCategoriaSeleccionada(nombre_categoria, id_categoria);
+            // desabilitamos la categoría del select_option
+            quitarCategoriaDelSelect(id_categoria);
+
+        }
+
+        function eliminarMensajeFaltaCategoria() {
+            document.getElementById("id_div_categoria_null").innerHTML = "<hr>";
+        }
+
+        function agregarCategoriaSeleccionada(nombre_categoria, id_categoria) {
+
+            let divCategoriasSeleccionadas = document.getElementById("div_categorias_seleccionadas");
+
+            const nuevoSpanInput = document.createElement("span");
+
+            nuevoSpanInput.setAttribute("id", "span_input_" + id_categoria);
+
+            divCategoriasSeleccionadas.appendChild(nuevoSpanInput);
+
+            let stringInputCategoria = "<label class='bg_green mx-1 my-1 px-1 py-1 rounded-2' for='id_categorias'>"
+                + "<input type='number' class='ms-2' name='id_categorias' value='"
+                + id_categoria + "' hidden>" + nombre_categoria
+                + "<span class='bg_white text_red mx-2 my-1 px-1 py-1 border' style='cursor: pointer;' "
+                + "id='span_categoria_" + id_categoria + "' >X</span></label>";
+
+            nuevoSpanInput.innerHTML = stringInputCategoria;
+
+            document.getElementById("span_categoria_" + id_categoria).addEventListener("click", () => {
+                quitarCategoriaDelInput(nombre_categoria);
+            }, false);
+
+        }
+
+        function quitarCategoriaDelSelect(idCategoriaSeleccionada) {
+            document.getElementById("idcat_" + idCategoriaSeleccionada).setAttribute("hidden", "true");
+        }
+
+        function quitarCategoriaDelInput(id_categoria) {
+            document.getElementById("idcat_" + id_categoria).removeAttribute("hidden");
+            let spanParaEliminar = document.getElementById("span_input_" + id_categoria);
+            document.getElementById("div_categorias_seleccionadas").removeChild(spanParaEliminar);
+        }
+
+
+        /* Con la siguiente función elimino las tildes de los nombres para compararlas. */
+
+        function eliminarTildeString(stringConTilde) {
+
+            let stringSinTilde = "";
+
+            for (let indice = 0; indice < stringConTilde.length; indice++) {
+                if (stringConTilde[indice] === "á") {
+                    stringSinTilde += "a";
+                } else if (stringConTilde[indice] === "é") {
+                    stringSinTilde += "e";
+                } else if (stringConTilde[indice] === "í") {
+                    stringSinTilde += "i";
+                } else if (stringConTilde[indice] === "ó") {
+                    stringSinTilde += "o";
+                } else if (stringConTilde[indice] === "ú") {
+                    stringSinTilde += "u";
+                } else {
+                    stringSinTilde += stringConTilde[indice];
+                }
+            }
+            return stringSinTilde;
+        }
+
+        function verificarSiCategoriaExiste(nombre_categoria_nueva) {
+            let categoriaSinTilde = eliminarTildeString(nombre_categoria_nueva.toLowerCase());
+            let laCategoriaExiste = false;
+
+            // obtenemos las categorías desde un formulario creado con inputs hidden
+            const formulario_categorias = document.getElementById("id_formulario_categorias");
+            const formDataCategorias = new FormData(formulario_categorias);
+            const listaCategoriasExistentes = formDataCategorias.getAll("categorias");
+
+            listaCategoriasExistentes.forEach(categoria => {
+                if (eliminarTildeString(categoria.toLowerCase()) === categoriaSinTilde) {
+                    laCategoriaExiste = true;
+                }
+            });
+
+            return laCategoriaExiste;
+        }
+
+        function agregarCategoriaNueva(categoria_nueva) {
+            if (verificarSiCategoriaExiste(categoria_nueva)) {
+                stringCategoriaNueva = "<span class='bg_white text_red mx-2 my-1 px-1 py-1 border' >"
+                    + "La categoría ingresada ya existe</span>";
+                document.getElementById("span_categoria_nueva").innerHTML = stringCategoriaNueva;
+                document.getElementById("input_categoria_nueva").value = "";
+            } else {
+                stringCategoriaNueva = categoria_nueva
+                    + "<span class='bg_white text_red mx-2 my-1 px-1 py-1 border' style='cursor: pointer;' "
+                    + " onclick='quitarCategoriaNueva()'>X</span>";
+                document.getElementById("span_categoria_nueva").innerHTML = stringCategoriaNueva;
+                document.getElementById("input_categoria_nueva").setAttribute("hidden", "true");
+            }
+        }
+
+        function quitarCategoriaNueva() {
+            document.getElementById("span_categoria_nueva").innerHTML = "";
+            let input_nueva_categoria = document.getElementById("input_categoria_nueva");
+            input_nueva_categoria.removeAttribute("hidden");
+            input_nueva_categoria.value = "";
+        }
+
+         window.addEventListener("load", iniciarScriptNuevoPost, false);
+
+    </script>
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <header class="bg_grey text_white">
+        <div class="mx-2 my-2 px-2 py-2">
+            <h2>Blog SurCode25 - Formulario para agregar nuevo post</h2>
+        </div>
+    </header>
+
+    <div id="div_datos_session"></div>
+
+    <main>
+       
+        <section class="mx-1 my-1 px-1 py-1 bg_blue border">
+            <article class="mx-1 my-1 px-1 py-1 bg_green">
+
+                <div class="bg_beige mx-1 my-1 px-1 py-1">
+                    <h4 class="text-center mx-1 my-1 px-1 py-1">Formulario para ingreso de post</h4>
+                </div>
+
+                <div class="mx-1 my-1 px-1 py-1 bg_beige">
+
+                    <form id="form_prueba_subir_post" class="mx-2 my-2 px-1 py-1">
+
+                        <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure">
+                            <div class="mb-3 ms-1 me-1">
+                                <label for="titulo" class="form-label">Título del post</label>
+                                <input type="text" class="form-control" id="titulo" name="titulo"
+                                    placeholder="Ingresar el título dle post" required mingthlenth="3" maxlength="100"
+                                    autofocus>
+                            </div>
+                        </div>
+
+                        <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure">
+                            <div class="mb-3 ms-1 me-1">
+                                <label for="contenido" class="form-label">Contenido del post</label>
+                                <textarea class="form-control" id="contenido" rows="5" name="contenido" required>
+                                    </textarea>
+                            </div>
+                        </div>
+
+
+                        <div id="div_input_file_prueba" class="mx-2 my-2 px-2 py-2 bg_grey">
+                            <div class="d-grid d-md-flex justify-content-md-end">
+                                <span onclick="agregar_imagen_post()"
+                                    class="elemento_onclick bg_lavender mx-2 px-2 py-1 rounded-2">
+                                    presionar para agregar una imagen</span>
+                            </div>
+                        </div>
+
+                        <!-- Autor (username) -->
+                        <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure" id="div_input_autor">
+                        </div>
+
+                        <!-- Categorías -->
+
+                        <div class="mx-2 my-2 px-1 py-1 bg_grey text_azure">
+
+                            <div class="row">
+
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="mx-1 my-1 px-1 py-1 border border-ligth">
+                                        <h5 class="text-center">Categorías para agregar al post</h5>
+
+                                        <div id="div_categorias_seleccionadas" class="mx-1 my-1 px-1 py-1"></div>
+
+                                        <!-- div para mostrar mensaje de que falta agregar categoría -->
+                                        <div id="id_div_categoria_null" class="mx-1 my-1 px-1 py-1"></div>
+
+                                        <div class="mx-1 my-1 px-1 py-1">
+                                            <label class="mx-1 my-1" for="categoria_nueva">
+                                                <span id="span_categoria_nueva"
+                                                    class="bg_green text_white mx-1 my-1 px-1 py-1 rounded-2"></span>
+                                            </label>
+                                            <input type="text" id="input_categoria_nueva" class="mx-1 my-1"
+                                                name="categoria_nueva" placeholder="ingresar nueva categoría"
+                                                onchange="agregarCategoriaNueva(value)">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-sm-12 col-md-6">
+                                    <h5 class="text-center">Lista de categorías disponibles</h5>
+
+                                    <!-- en el siguiente div se agrega un select/option para 
+                                    mostrar las categorias existentes en la base de datos -->
+                                    <div id="div_select_categorias"></div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="bg_cyan mx-2 my-2 px-2 py-2">
+                            <div class="d-grid d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-success me-2 px-1 py-1">
+                                    Enviar datos Post</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- div para Formulario para obtener categorías, para comparar y validar -->
+                <div id="div_form_categorias" class="mx-2 my-2 px-2 py-2 border"></div>
+
+            </article>
+           
+        </section>
+    </main>
+    <footer class="bg_brown text_cyan">
+        <div class="mx-2 my-2 px-2 py-2">
+            <h4>Proyecto: Blog de SurCode25</h4>
+            <h4>Autor: Salvador Mauricio Vilches Jerez</h4>
+        </div>
+    </footer>
+
+    <script src="/scripts_js/bootstrap.bundle.js"></script>
+
+    <script>
+  
+         function agregar_imagen_post() {
+            let stringInputFile = "<div class='bg_beige mx-1 my-1 px-1 py-1'>"
+                 + "<label for='imagen_post' class='mx-2 my-1 px-1 py-1'>Seleccionar imagen</label>"
+                 + "<input type='file' name='imagen_post'/></div>"
+                 + "<div class='d-grid d-md-flex justify-content-md-end'>"
+                 + "<span onclick='cancelar_agregar_imagen()' class='elemento_onclick bg_lavender mx-2 px-2 py-1 rounded-2'>"
+                 + "Cancelar agregar imagen</span>"
+                 + "</div>";
+
+            document.getElementById("div_input_file_prueba").innerHTML = stringInputFile;
+
+         }
+
+        function cancelar_agregar_imagen() {
+             document.getElementById("div_input_file_prueba").innerHTML = "<div class='d-grid d-md-flex justify-content-md-end'>"
+                 + "<span onclick='agregar_imagen_prueba()' class='elemento_onclick bg_lavender mx-2 px-2 py-1 rounded-2'>"
+                 + "presionara para Agregar una Imagen</span>"
+                 + "</div>";
+         }
+     
+
+        const formulario_nuevo_post = document.getElementById("form_prueba_subir_post");
+
+        formulario_nuevo_post.addEventListener("submit", function (event) {
+            event.preventDefault();    // Evita el envío del formulario por defecto 
+
+            const formDataConDatos = new FormData(event.currentTarget);
+
+            let token = "";
+
+            if (window.sessionStorage !== null) {
+                console.log("sessionStorage soportada");
+                const datos_session = JSON.parse(sessionStorage.getItem("datos_session_sc25"));
+                token = datos_session.token;
+               
+            } else {
+                console.log("este navegador no soporta sessionStorage");
+            }
+
+
+            fetch("/blog_02/agregar_nuevo_post", {
+                method: "POST",
+                headers: {                    
+                    "Authorization": `Bearer ${token}`
+                },
+                body: formDataConDatos
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Formulario enviado satisfactoriamente: ", data);
+
+                    window.location.assign("/blog_02/mostrar_publicaciones_blog");
+
+                })
+                .catch(error => {
+                    console.error("Error: ", error);
+                });
+
+
+        }, false);
+            
+
+    </script>
+
+</body>
+
+</html>

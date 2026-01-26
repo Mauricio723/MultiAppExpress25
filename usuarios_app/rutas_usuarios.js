@@ -11,10 +11,9 @@ const upload = multer();
 
 usuariosRouter.get("/mostrar_formulario_registro/:rol_usuario", (req, res) => {
     const rolUsuario = req.params.rol_usuario;
-    console.log("rol ingresado: ", rolUsuario); 
-
-    res.render("templates_usuarios/formulario_usuarios.ejs", { 
-        tipo_formulario: "formulario_registro", rol_usuario: rolUsuario
+   
+    res.render("templates_usuarios/formulario_registro.ejs", { 
+        rol_usuario: rolUsuario
     });
 
 }); 

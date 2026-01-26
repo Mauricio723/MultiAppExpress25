@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicaciones Blog</title>
+
+    <link rel="stylesheet" href="/estilos_css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/estilos_css/colores_const.css">
+
+    <link rel="stylesheet" href="/estilos_css/estilos_main.css">
+
+    <script>
+
+        function mostrarPublicacionesInicio() {
+
+            let stringDivPublicaciones = "<div class='row gx-0'>"
+                + "<% publicaciones.forEach(publicacion=> { %>"        
+                + "<div class='col-sm-12 col-md-6 col-lg-4'>"
+                + "<a href='/blog_02/mostrar_post_seleccionado/<%= publicacion.id_post %>'>"
+                + "<div class='mx-1 my-1 px-1 py-1 bg_white text_black rounded'>"                        
+                + "<p>id: <%= publicacion.id_post %></p>"                            
+                + "<p class='text-center'><%= publicacion.titulo %></p>"                            
+                + "<p class='mx-1 my-1 px-1 py-1'><%= publicacion.fecha_publicacion %></p>"                   
+                + "</div></a></div>"                                        
+                + "<% }) %>"        
+                + "</div>";
+
+            document.getElementById("div_publicaciones_main").innerHTML = stringDivPublicaciones;
+
+        }
+
+        function obtenerPostPorCategoria(id_categoria) {
+
+            const url_blog_posteos = "/blog_02/obtener_posteos_por_id_categoria/" + id_categoria;
+
+            fetch(url_blog_posteos, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then((posteos) => {
+                    
+                    let stringPosteosCategoria = "";
+
+                    posteos.forEach(post => {
+
+                        stringPosteosCategoria += "<div class='col-sm-12 col-md-6 col-lg-4'>"
+                        + "<a href='/blog_02/mostrar_post_seleccionado/" + post.id_post + "'>"
+                        + "<div class='mx-1 my-1 px-1 py-1 bg_white text_black rounded'>"                        
+                        + "<p>id:" + post.id_post + "</p>"                            
+                        + "<p class='text-center'>Título: " + post.titulo + "</p>"                            
+                        + "<p class='mx-1 my-1 px-1 py-1'>Fecha Publicación: " + post.fecha_publicacion + "</p>"                            
+                        + "</div></a></div>";  
+
+                    });
+
+                    let string_article_posteos = "<div class='my-1 px-2 py-2'>"
+                        + "<h5 class='bg_white text_grey mx-1 my-1 px-2 py-2'>Publicaciones de Categoría: "
+                        + posteos[0].categoria + "</h5>"
+                        + "<div class='row gx-0'>"
+                        + stringPosteosCategoria      
+                        + "</div>";
+                        + "</div>";
+
+                    document.getElementById("div_publicaciones_main").innerHTML = string_article_posteos;                                                          
+
+                })
+                .catch(error => {
+                    console.error("error al obtener datos: ", error);
+                });
+
+        }
+
+        function mostrarCategoriasDePosteos() {
+            
+            fetch("/blog_02/obtener_categorias_de_posteos", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then((response) => response.json())
+                .then((categorias_blog) => {
+
+                    let string_botones_categorias = "";
+
+                    categorias_blog.forEach(datos => {
+                        string_botones_categorias += "<p onclick='obtenerPostPorCategoria("
+                            + datos.id_categoria + ")'"
+                            + " class='elemento_onclick mx-2 my-2'>"
+                            + datos.id_categoria + " - " + datos.nombre_categoria + "</p>";
+                    });
+                   
+                    document.getElementById("div_aside_categorias").innerHTML = "<div class='mx-1 my-1'>" 
+                        +  string_botones_categorias + "</div>";
+
+                })
+                .catch(error => {
+                    console.error("Error al obtener datos: ", error);
+                });
+        }
+
+        window.addEventListener("load", mostrarPublicacionesInicio, false);
+
+    </script>    
+
+</head>
+
+<body class="bg_beige">
+
+    <header class="mx-1 my-1 px-1 py-1 bg_blue text_white">
+        <h4>SurCode25</h4>
+        <h3 class="text-center">El Blog de SurCode</h3>
+    </header>
+
+    <section>
+
+        <div class="container-fluid">
+
+            <div class="row gx-0">
+
+                <div class="col-sm-12 col-md-3 col-lg-3">
+
+                    <div class="mx-1 my-1 px-1 py-1 border">
+                        <aside class="bg_lavender">
+                            <h6 class="elemento_onclick bg_cyan text_green text-center mx-1 my-1 py-1"
+                            onclick="mostrarCategoriasDePosteos()">
+                                Mostrar Categorías</h6>
+
+                            <div id="div_aside_categorias"></div>
+                        </aside>
+
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-6">
+
+                    <article class="bg_green mx-1 my-1 px-1 py-1 border">
+
+                        <h4 class="text-center py-1 bg_white text_black">Publicaciones Blog</h4>
+
+                        <div id="div_publicaciones_main"></div>
+
+                    </article>
+
+                </div>
+
+                <div class="col-sm-12 col-md-3 col-lg-3">
+                    <aside class="mx-1 my-1 px-1 py-1 border">
+                        <p>Sección para enlaces externos</p>
+                    </aside>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <footer class="mx-1 my-1 px-1 py-1 bg_blue text_white">
+        <p>Proyecto: Blog SurCode</p>
+        <p>Autor: Ben Martins</p>
+    </footer>
+
+    <script src="/scripts_js/bootstrap.bundle.js"></script>
+
+</body>
+
+</html>

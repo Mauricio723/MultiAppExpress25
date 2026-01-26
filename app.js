@@ -3,7 +3,10 @@ import express from "express";
 //import multer from "multer"; 
 
 //import { frasesRouter } from "./app_frases_01/rutas_frases.js";
-import { blogRouter } from "./app_blog_01/rutas_blog_01.js";
+//import { blogRouter } from "./app_blog_01/rutas_blog_01.js";
+
+import { blogRouter02 } from "./app_blog_01/rutas_blog.js";
+
 import { usuariosRouter } from "./usuarios_app/rutas_usuarios.js"; 
 
 const app = express(); 
@@ -58,7 +61,7 @@ app.use("/usuarios", usuariosRouter);
 
 //app.use("/frases", frasesRouter); 
 
-app.use("/blog", blogRouter);
+app.use("/blog_02", blogRouter02);
 
 const PORT = process.env.PORT ?? 3005;
 
