@@ -9,6 +9,9 @@ import { blogRouter02 } from "./app_blog_01/rutas_blog.js";
 
 import { usuariosRouter } from "./usuarios_app/rutas_usuarios.js"; 
 
+import { galeriaRouter } from "./app_galeria_img/rutas_galeria.js"; 
+
+
 const app = express(); 
 
 //const upload_post = multer();
@@ -62,6 +65,9 @@ app.use("/usuarios", usuariosRouter);
 //app.use("/frases", frasesRouter); 
 
 app.use("/blog_02", blogRouter02);
+
+app.use("/galeria_img", galeriaRouter); 
+
 
 const PORT = process.env.PORT ?? 3005;
 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Galería de Imágenes</title>
+
+    <link rel="stylesheet" href="/estilos_css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/estilos_css/colores_const.css">
+
+</head>
+
+<body class="bg_beige">
+    <header>
+        <div class="bg_grey text_yellow mx-1 my-1 px-1 py-1">
+            <div class="text_orange mx-1 my-1 px-1 py-1">
+                <h5>SurCode26</h5>
+            </div>
+            <div class="text_white mx-1 my-1 px-1 py-1">
+                <h4 class="text-center">Multi Galería de Imágenes</h4>
+            </div>
+        </div>
+    </header>
+
+    <div>
+
+        <div class="bg_white mx-1 my-1 px-1 py-1 mx-1 my-1">
+
+        <h5 class="text-center mx-1 my-1">Formulario de ingreso de Inágenes a la galería</h5>
+
+        <div class="mx-1 my-1 px-1 py-1">
+
+            <div class="bg_cyan mx-2 my-2 px-2 py-2">
+
+                <form id="form_img_galeria">
+
+                    <div class="bg_grey text_white mx-1 my-1 px-2 py-2 rounded-2">
+                        <div>
+                            <label for="titulo_img" class="mx-2 my-2">Titulo de la imagen</label>
+                            <input type="text" name="titulo_img" placeholder="ingresar el título de la imagen" size="50"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="bg_grey text_white mx-1 my-1 px-2 py-2 rounded-2">
+                        <div>
+                            <label for="orden_img" class="mx-2 my-2">N° orden imagen</label>
+                            <input type="number" name="orden_img" placeholder="ingresar el número de la imagen" size="50"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="bg_grey text_white mx-1 my-1 px-2 py-2 rounded-2">
+
+                        <label for="file_imagen" class="mx-2 my-2">Seleccionar Imagen</label>
+                        <input type="file" name="file_imagen">
+                    </div>
+
+                    <div class="bg_cyan mx-2 my-2 px-2 py-2">
+                        <div class="d-grid d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-success me-2 px-1 py-1">
+                                Enviar datos</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+    
+
+    <footer class="bg_brown text_lime">
+        <div class="mx-1 my-1 px-1 py-1">
+            <h5>Proyecto: Multi Galería de Imágenes</h5>
+            <h5>Autor: Salvador Mauricio Vilches Jerez</h5>
+        </div>
+    </footer>
+
+    <script src="/scripts_js/bootstrap.bundle.js"></script>
+
+    <script>
+
+
+        const form_galeria_img = document.getElementById("form_img_galeria");
+
+        form_galeria_img.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formDataGaleria = new FormData(event.currentTarget);
+
+            fetch("/galeria_img/agregar_imagen", {
+                method: "POST",
+                body: formDataGaleria
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("imagen agregada exitosamente: ", data);
+
+                    window.location.assign("/galeria_img/mostrar_galeria");
+                })
+                .catch(error => {
+                    console.error("Error: ", error);
+                })
+
+        }, false);
+
+        
+    </script>
+</body>
+
+</html>

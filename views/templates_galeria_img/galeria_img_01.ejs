@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería imágenes</title>
+
+    <link rel="stylesheet" href="/estilos_css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/estilos_css/colores_const.css">
+
+    <style>
+        .div_imagen {
+            height: 600px;
+            margin-top: 20px; 
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+        .imagen_galeria {
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+    <header class="bg_grey">
+        <div class="mx-1 my-1 px-1 py-1">
+            <h2 class="text-center text_yellow">Galería de imágenes</h2>
+        </div>        
+    </header>
+    <div class="bg_green px-1 py-1">
+
+        <div id="div_galeria_01" class="row gx-0"></div>
+
+    </div>
+    
+    <script>
+
+        function mostrarImagenesGaleria() {
+
+            fetch("/galeria_img/obtener_imagenes", {
+                method: "GET", 
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then((response) => response.json())
+                .then((datos_img) => {
+
+                    //console.log("datos_img: ", datos_img);
+
+                    let divGaleria = document.getElementById("div_galeria_01"); 
+
+                    let stringDivGaleria = "";
+
+                    datos_img.forEach(dato_imagen => {
+                        stringDivGaleria += "<div class='col-sm-12 col-md-6 col-lg-4'>" 
+                            + "<div class='bg_silver mx-2 my-2 px-2 py-2 rounded-2'><h5>" 
+                            + dato_imagen.orden_img + "</h5>"
+                            + "<h4>" + dato_imagen.titulo_img + "</h4>"
+                            + "<div class='div_imagen'>"
+                            + "<img src='" + dato_imagen.url_imagen + "' class='imagen_galeria'>" 
+                            + "</div></div></div>";
+                    });                    
+
+                    divGaleria.innerHTML = stringDivGaleria;
+
+                })
+                .catch(error => {
+                    console.error("error al obtener datos de imágenes: ", error); 
+                });
+
+
+        }
+       
+        window.addEventListener("load", mostrarImagenesGaleria, false); 
+
+    </script>
+
+    <script src="/scripts_js/bootstrap.bundle.js"></script>
+    
+</body>
+</html>
